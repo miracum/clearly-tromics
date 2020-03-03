@@ -73,36 +73,45 @@ C_Lycorine_vs_Bufalin <- results(dds, contrast = c('treatment','Lycorine','Bufal
 
 
 ##Annotation
-A_Bufalin_vs_DMSO$symbol <- mapIds(org.Rn.eg.db,
-                                   keys=row.names(A_Bufalin_vs_DMSO),
-                                   column="SYMBOL",
-                                   keytype="ENSEMBL",
-                                   multiVals="first")
-A_Bufalin_vs_DMSO$entrez <- mapIds(org.Rn.eg.db,
-                                   keys=row.names(A_Bufalin_vs_DMSO),
-                                   column="ENTREZID",
-                                   keytype="ENSEMBL",
-                                   multiVals="first")
-B_Lycorine_vs_DMSO$symbol <- mapIds(org.Rn.eg.db,
-                                    keys=row.names(B_Lycorine_vs_DMSO),
-                                    column="SYMBOL",
-                                    keytype="ENSEMBL",
-                                    multiVals="first")
-B_Lycorine_vs_DMSO$entrez <- mapIds(org.Rn.eg.db,
-                                    keys=row.names(B_Lycorine_vs_DMSO),
-                                    column="ENTREZID",
-                                    keytype="ENSEMBL",
-                                    multiVals="first")
-C_Lycorine_vs_Bufalin$symbol <- mapIds(org.Rn.eg.db,
-                                       keys=row.names(C_Lycorine_vs_Bufalin),
-                                       column="SYMBOL",
-                                       keytype="ENSEMBL",
-                                       multiVals="first")
-C_Lycorine_vs_Bufalin$entrez <- mapIds(org.Rn.eg.db,
-                                       keys=row.names(C_Lycorine_vs_Bufalin),
-                                       column="ENTREZID",
-                                       keytype="ENSEMBL",
-                                       multiVals="first")
+# A_Bufalin_vs_DMSO$symbol <- mapIds(org.Rn.eg.db,
+#                                    keys=row.names(A_Bufalin_vs_DMSO),
+#                                    column="SYMBOL",
+#                                    keytype="ENSEMBL",
+#                                    multiVals="first")
+# A_Bufalin_vs_DMSO$entrez <- mapIds(org.Rn.eg.db,
+#                                    keys=row.names(A_Bufalin_vs_DMSO),
+#                                    column="ENTREZID",
+#                                    keytype="ENSEMBL",
+#                                    multiVals="first")
+# B_Lycorine_vs_DMSO$symbol <- mapIds(org.Rn.eg.db,
+#                                     keys=row.names(B_Lycorine_vs_DMSO),
+#                                     column="SYMBOL",
+#                                     keytype="ENSEMBL",
+#                                     multiVals="first")
+# B_Lycorine_vs_DMSO$entrez <- mapIds(org.Rn.eg.db,
+#                                     keys=row.names(B_Lycorine_vs_DMSO),
+#                                     column="ENTREZID",
+#                                     keytype="ENSEMBL",
+#                                     multiVals="first")
+# C_Lycorine_vs_Bufalin$symbol <- mapIds(org.Rn.eg.db,
+#                                        keys=row.names(C_Lycorine_vs_Bufalin),
+#                                        column="SYMBOL",
+#                                        keytype="ENSEMBL",
+#                                        multiVals="first")
+# C_Lycorine_vs_Bufalin$entrez <- mapIds(org.Rn.eg.db,
+#                                        keys=row.names(C_Lycorine_vs_Bufalin),
+#                                        column="ENTREZID",
+#                                        keytype="ENSEMBL",
+#                                        multiVals="first")
+#
+#
+## TODO INFO replaced 3.3.2020
+A_Bufalin_vs_DMSO$symbol <- annotation(keys = A_Bufalin_vs_DMSO)
+A_Bufalin_vs_DMSO$entrez <- annotation(keys = A_Bufalin_vs_DMSO)
+B_Lycorine_vs_DMSO$symbol <- annotation(keys = B_Lycorine_vs_DMSO)
+B_Lycorine_vs_DMSO$entrez <- annotation(keys = B_Lycorine_vs_DMSO)
+C_Lycorine_vs_Bufalin$symbol <- annotation(keys = C_Lycorine_vs_Bufalin)
+C_Lycorine_vs_Bufalin$entrez <- annotation(keys = C_Lycorine_vs_Bufalin)
 
 #write.csv(A_Bufalin_vs_DMSO, 'A_Bufalin_vs_DMSO.csv')
 #write.csv(B_Lycorine_vs_DMSO, 'B_Lycorine_vs_DMSO.csv')
