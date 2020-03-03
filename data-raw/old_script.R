@@ -1,35 +1,31 @@
+##Differential gene expression analysis
+
 library(DESeq2)
-library(gdata)
 library(ggplot2)
 library(dplyr)
-library(AnnotationDbi)
-library(org.Hs.eg.db)
-library(openxlsx)
+library(org.Rn.eg.db)
+library(gplots)
+library(pheatmap)
+library(EnhancedVolcano)
 
+setwd('P:/Hannover/Kreutzer/')
 
 #Input of count matrix
-counttable <- "D:/Erlangen/Mougiakakos_Group/Stoll_CD137_Monocyten/new_analysis/raw_data/raw_counts.csv"
-metadata <- "D:/Erlangen/Mougiakakos_Group/Stoll_CD137_Monocyten/new_analysis/raw_data/metadata.csv"
+counttable <- "P:/Hannover/Kreutzer/raw_data/count_data.csv"
+metadata <- "P:/Hannover/Kreutzer/raw_data/metadata.csv"
 
 countdata <- as.matrix(read.csv(counttable, row.names = 1))
-
 coldata <- read.csv(metadata, row.names = 1)
-coldata <- coldata[,c('condition', 'donor')]
-coldata$donor <- as.factor(coldata$donor)
 
 ##Checking annotation
 all(rownames(coldata) %in% colnames(countdata))
 all(rownames(coldata) == colnames(countdata))
 
-##extracting donor K218
-countdata <- countdata[,-c(3,4)]
-coldata <- coldata[-c(3,4),]
-
 ##Creating DESeq2dataset object
 
 dds <- DESeqDataSetFromMatrix(countData = countdata,
                               colData = coldata,
-                              design = ~ 0 + condition + donor)
+                              design = ~ 0 + treatment)
 
 #Pre-filtering
 nrow(dds)
@@ -42,49 +38,127 @@ rld <- rlog(dds, blind = F)
 head(assay(rld), 3)
 
 #PCA
-pcaData <- plotPCA(rld, intgroup = c('condition','donor'), returnData = T)
+pcaData <- plotPCA(rld,intgroup = 'treatment',returnData = T)
 pcaData
 
-png(file="PCA.png")
+#png(file="PCA.png")
 percentVar <- round(100*attr(pcaData, 'percentVar'))
-ggplot(pcaData, aes(x=PC1, y=PC2, color=condition, shape=donor)) + 
+ggplot(pcaData, aes(x=PC1, y=PC2, color=treatment)) + 
   geom_point(size=3) + 
   xlab(paste0('PC1: ', percentVar[1], '% variance')) +
   ylab(paste0('PC2: ', percentVar[2], '% variance')) +
   coord_fixed()
-dev.off()
+#dev.off()
 
 #MDS
 sampleDists <- dist(t(assay(rld)))
 sampleDistMatrix <- as.matrix( sampleDists )
 mds <- as.data.frame(colData(rld))  %>%
   cbind(cmdscale(sampleDistMatrix))
-png(file="MDS.png")
-ggplot(mds, aes(x = `1`, y = `2`, color = condition, shape = donor)) +
+#png(file="MDS.png")
+ggplot(mds, aes(x = `1`, y = `2`, color = treatment)) +
   geom_point(size = 3) + 
   coord_fixed()
-dev.off()
+#dev.off()
 
 #Differential expression analysis
 dds <- DESeq(dds)
-res_CD137_highvslow <- results(dds, contrast = c('condition','CD137_high','CD137_low'),
-                          pAdjustMethod = 'BH')
+A_Bufalin_vs_DMSO <- results(dds, contrast = c('treatment','Bufalin','DMSO'),
+                             pAdjustMethod = 'BH')
+B_Lycorine_vs_DMSO <- results(dds, contrast = c('treatment','Lycorine','DMSO'),
+                              pAdjustMethod = 'BH')
+C_Lycorine_vs_Bufalin <- results(dds, contrast = c('treatment','Lycorine','Bufalin'),
+                                 pAdjustMethod = 'BH')
 
 
 
 ##Annotation
-res_CD137_highvslow$symbol <- mapIds(org.Hs.eg.db,
-                                keys=row.names(res_CD137_highvslow),
-                                column="SYMBOL",
-                                keytype="ENSEMBL",
-                                multiVals="first")
-res_CD137_highvslow$entrez <- mapIds(org.Hs.eg.db,
-                                keys=row.names(res_CD137_highvslow),
-                                column="ENTREZID",
-                                keytype="ENSEMBL",
-                                multiVals="first")
+A_Bufalin_vs_DMSO$symbol <- mapIds(org.Rn.eg.db,
+                                   keys=row.names(A_Bufalin_vs_DMSO),
+                                   column="SYMBOL",
+                                   keytype="ENSEMBL",
+                                   multiVals="first")
+A_Bufalin_vs_DMSO$entrez <- mapIds(org.Rn.eg.db,
+                                   keys=row.names(A_Bufalin_vs_DMSO),
+                                   column="ENTREZID",
+                                   keytype="ENSEMBL",
+                                   multiVals="first")
+B_Lycorine_vs_DMSO$symbol <- mapIds(org.Rn.eg.db,
+                                    keys=row.names(B_Lycorine_vs_DMSO),
+                                    column="SYMBOL",
+                                    keytype="ENSEMBL",
+                                    multiVals="first")
+B_Lycorine_vs_DMSO$entrez <- mapIds(org.Rn.eg.db,
+                                    keys=row.names(B_Lycorine_vs_DMSO),
+                                    column="ENTREZID",
+                                    keytype="ENSEMBL",
+                                    multiVals="first")
+C_Lycorine_vs_Bufalin$symbol <- mapIds(org.Rn.eg.db,
+                                       keys=row.names(C_Lycorine_vs_Bufalin),
+                                       column="SYMBOL",
+                                       keytype="ENSEMBL",
+                                       multiVals="first")
+C_Lycorine_vs_Bufalin$entrez <- mapIds(org.Rn.eg.db,
+                                       keys=row.names(C_Lycorine_vs_Bufalin),
+                                       column="ENTREZID",
+                                       keytype="ENSEMBL",
+                                       multiVals="first")
 
-write.csv(res_CD137_highvslow, file = "CD137highvslow.csv")
-res_CD137_highvslow <- as.data.frame(res_CD137_highvslow)
-write.xlsx(res_CD137_highvslow, file = "CD137highvslow_no218.xlsx", row.names = T)
+#write.csv(A_Bufalin_vs_DMSO, 'A_Bufalin_vs_DMSO.csv')
+#write.csv(B_Lycorine_vs_DMSO, 'B_Lycorine_vs_DMSO.csv')
+#write.csv(C_Lycorine_vs_Bufalin, 'C_Lycorine_vs_Bufalin.csv')
+
+##heatmap
+topVarianceGenes <- head(order(rowVars(assay(rld)), decreasing=T),1000)
+matrix <- assay(rld)[topVarianceGenes,]
+matrix <- matrix - rowMeans(matrix)
+
+annotation_data <- as.data.frame(colData(rld))
+pheatmap(matrix, scale = 'row',show_rownames = F, color = bluered(100), fontsize = 8, annotation_col = coldata, cluster_cols = F) 
+
+#volcano plot
+#tiff("Volcano.tiff", width = 800, height = 800, units = 'px')
+
+B_Lycorine_vs_DMSO_df <- as.data.frame(B_Lycorine_vs_DMSO)
+B_Lycorine_vs_DMSO_df <- B_Lycorine_vs_DMSO_df %>% filter(!is.na(padj))
+EnhancedVolcano(B_Lycorine_vs_DMSO_df,
+                title = 'Lycorine vs. DMSO',
+                lab = as.character(row.names(B_Lycorine_vs_DMSO_df)),
+                selectLab = '',
+                subtitle = '',
+                x = 'log2FoldChange',
+                y = 'padj',
+                legend=c('not significant','Log (base 2) fold-change','FDR',
+                         'FDR & Log (base 2) fold-change'),
+                pCutoff = 0.05,
+                FCcutoff = 1,
+                transcriptPointSize = 3.0,
+                colAlpha = 0.5,
+                xlim = c(-6,6),
+                ylim = c(0,100),
+                ylab = bquote(~-Log[10]~FDR))
+#dev.off()
+
+C_Lycorine_vs_Bufalin_df <- as.data.frame(C_Lycorine_vs_Bufalin)
+C_Lycorine_vs_Bufalin_df <- C_Lycorine_vs_Bufalin_df %>% filter(!is.na(padj))
+EnhancedVolcano(C_Lycorine_vs_Bufalin_df,
+                title = 'Lycorine vs. Bufalin',
+                lab = as.character(row.names(C_Lycorine_vs_Bufalin_df)),
+                selectLab = '',
+                subtitle = '',
+                x = 'log2FoldChange',
+                y = 'padj',
+                legend=c('not significant','Log (base 2) fold-change','FDR',
+                         'FDR & Log (base 2) fold-change'),
+                pCutoff = 0.05,
+                FCcutoff = 1,
+                transcriptPointSize = 3.0,
+                colAlpha = 0.5,
+                xlim = c(-10,10),
+                ylim = c(0,100),
+                ylab = bquote(~-Log[10]~FDR))
+
+A_Bufalin_vs_DMSO_sig <- as.data.frame(A_Bufalin_vs_DMSO) %>% filter(padj < 0.05 & abs(log2FoldChange) >1)
+B_Lycorine_vs_DMSO_sig <- as.data.frame(B_Lycorine_vs_DMSO) %>% filter(padj < 0.05 & abs(log2FoldChange) >1)
+C_Lycorine_vs_Bufalin_sig <- as.data.frame(C_Lycorine_vs_Bufalin) %>% filter(padj < 0.05 & abs(log2FoldChange) >1)
 
