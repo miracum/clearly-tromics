@@ -43,8 +43,8 @@ pcaData
 
 #png(file="PCA.png")
 percentVar <- round(100*attr(pcaData, 'percentVar'))
-ggplot(pcaData, aes(x=PC1, y=PC2, color=treatment)) + 
-  geom_point(size=3) + 
+ggplot(pcaData, aes(x=PC1, y=PC2, color=treatment)) +
+  geom_point(size=3) +
   xlab(paste0('PC1: ', percentVar[1], '% variance')) +
   ylab(paste0('PC2: ', percentVar[2], '% variance')) +
   coord_fixed()
@@ -57,7 +57,7 @@ mds <- as.data.frame(colData(rld))  %>%
   cbind(cmdscale(sampleDistMatrix))
 #png(file="MDS.png")
 ggplot(mds, aes(x = `1`, y = `2`, color = treatment)) +
-  geom_point(size = 3) + 
+  geom_point(size = 3) +
   coord_fixed()
 #dev.off()
 
@@ -109,12 +109,18 @@ C_Lycorine_vs_Bufalin$entrez <- mapIds(org.Rn.eg.db,
 #write.csv(C_Lycorine_vs_Bufalin, 'C_Lycorine_vs_Bufalin.csv')
 
 ##heatmap
-topVarianceGenes <- head(order(rowVars(assay(rld)), decreasing=T),1000)
-matrix <- assay(rld)[topVarianceGenes,]
-matrix <- matrix - rowMeans(matrix)
-
-annotation_data <- as.data.frame(colData(rld))
-pheatmap(matrix, scale = 'row',show_rownames = F, color = bluered(100), fontsize = 8, annotation_col = coldata, cluster_cols = F) 
+## TODO INFO replaced 3.3.2020
+# topVarianceGenes <- head(order(rowVars(assay(rld)), decreasing=T),1000)
+# matrix <- assay(rld)[topVarianceGenes,]
+# matrix <- matrix - rowMeans(matrix)
+#
+# annotation_data <- as.data.frame(colData(rld))
+# pheatmap(matrix, scale = 'row',show_rownames = F, color = bluered(100), fontsize = 8, annotation_col = coldata, cluster_cols = F)
+tRomics::plot_heatmap(
+  rld = rld,
+  filename = "./heatmap.png",
+  ngenes = 1000
+)
 
 #volcano plot
 #tiff("Volcano.tiff", width = 800, height = 800, units = 'px')
