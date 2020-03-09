@@ -9,7 +9,7 @@
 #' @export
 annotation <- function(
   keys,
-  orgDB = "org.Rn.eg.db",
+  orgdb = "org.Rn.eg.db",
   column = "SYMBOL",
   keytype = "ENSEMBL",
   multi_vals = "first"
@@ -23,4 +23,3 @@ annotation <- function(
       multiVals = multi_vals)
   )
 }
-

@@ -16,9 +16,9 @@ plot_heatmap <- function(rld,
     order(
       matrixStats::rowVars(
         SummarizedExperiment::assay(rld)),
-      decreasing=T),
+      decreasing = T),
     ngenes
-    )
+  )
   var_mat <- SummarizedExperiment::assay(rld)[top_variance_genes, ]
   var_mat <- var_mat - rowMeans(var_mat)
 
@@ -34,7 +34,7 @@ plot_heatmap <- function(rld,
   print({
     pheatmap::pheatmap(
       var_mat,
-      scale = 'row',
+      scale = "row",
       show_rownames = F,
       color = gplots::bluered(100),
       fontsize = 8,
@@ -44,4 +44,3 @@ plot_heatmap <- function(rld,
   })
   grDevices::dev.off()
 }
-

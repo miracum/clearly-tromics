@@ -6,7 +6,7 @@
 \usage{
 annotation(
   keys,
-  orgDB = "org.Rn.eg.db",
+  orgdb = "org.Rn.eg.db",
   column = "SYMBOL",
   keytype = "ENSEMBL",
   multi_vals = "first"
