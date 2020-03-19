@@ -41,25 +41,24 @@ head(assay(rld), 3)
 pcaData <- plotPCA(rld,intgroup = 'treatment',returnData = T)
 pcaData
 
-#png(file="PCA.png")
 percentVar <- round(100*attr(pcaData, 'percentVar'))
 ggplot(pcaData, aes(x=PC1, y=PC2, color=treatment)) +
   geom_point(size=3) +
   xlab(paste0('PC1: ', percentVar[1], '% variance')) +
   ylab(paste0('PC2: ', percentVar[2], '% variance')) +
   coord_fixed()
-#dev.off()
+
 
 #MDS
 sampleDists <- dist(t(assay(rld)))
 sampleDistMatrix <- as.matrix( sampleDists )
 mds <- as.data.frame(colData(rld))  %>%
   cbind(cmdscale(sampleDistMatrix))
-#png(file="MDS.png")
+
 ggplot(mds, aes(x = `1`, y = `2`, color = treatment)) +
   geom_point(size = 3) +
   coord_fixed()
-#dev.off()
+
 
 #Differential expression analysis
 dds <- DESeq(dds)
