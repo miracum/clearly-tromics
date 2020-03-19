@@ -8,14 +8,12 @@ library(gplots)
 library(pheatmap)
 library(EnhancedVolcano)
 
-setwd('P:/Hannover/Kreutzer/')
-
 #Input of count matrix
 counttable <- "P:/Hannover/Kreutzer/raw_data/count_data.csv"
 metadata <- "P:/Hannover/Kreutzer/raw_data/metadata.csv"
 
-countdata <- as.matrix(read.csv(counttable, row.names = 1))
-coldata <- read.csv(metadata, row.names = 1)
+countdata <- as.matrix(utils::read.csv(counttable, row.names = 1))
+coldata <- utils::read.csv(metadata, row.names = 1)
 
 ##Checking annotation
 all(rownames(coldata) %in% colnames(countdata))
@@ -23,7 +21,7 @@ all(rownames(coldata) == colnames(countdata))
 
 ##Creating DESeq2dataset object
 
-dds <- DESeqDataSetFromMatrix(countData = countdata,
+dds <- DESeq2::DESeqDataSetFromMatrix(countData = countdata,
                               colData = coldata,
                               design = ~ 0 + treatment)
 
@@ -34,39 +32,39 @@ dds <- dds[keep,]
 nrow(dds)
 
 #rlog transformation
-rld <- rlog(dds, blind = F)
-head(assay(rld), 3)
+rld <- DESeq2::rlog(dds, blind = F)
+utils::head(assay(rld), 3)
 
 #PCA
-pcaData <- plotPCA(rld,intgroup = 'treatment',returnData = T)
+pcaData <- DESeq2::plotPCA(rld,intgroup = 'treatment',returnData = T)
 pcaData
 
 percentVar <- round(100*attr(pcaData, 'percentVar'))
-ggplot(pcaData, aes(x=PC1, y=PC2, color=treatment)) +
-  geom_point(size=3) +
-  xlab(paste0('PC1: ', percentVar[1], '% variance')) +
-  ylab(paste0('PC2: ', percentVar[2], '% variance')) +
-  coord_fixed()
+ggplot2::ggplot(pcaData, aes(x=PC1, y=PC2, color=treatment)) +
+  ggplot2:geom_point(size=3) +
+  ggplot2::xlab(paste0('PC1: ', percentVar[1], '% variance')) +
+  ggplot2::ylab(paste0('PC2: ', percentVar[2], '% variance')) +
+  ggplot2::coord_fixed()
 
 
 #MDS
-sampleDists <- dist(t(assay(rld)))
+sampleDists <- stats::dist(t(assay(rld)))
 sampleDistMatrix <- as.matrix( sampleDists )
 mds <- as.data.frame(colData(rld))  %>%
-  cbind(cmdscale(sampleDistMatrix))
+  cbind(stats::cmdscale(sampleDistMatrix))
 
-ggplot(mds, aes(x = `1`, y = `2`, color = treatment)) +
-  geom_point(size = 3) +
-  coord_fixed()
+ggplot2::ggplot(mds, aes(x = `1`, y = `2`, color = treatment)) +
+  ggplot2::geom_point(size = 3) +
+  ggplot2::coord_fixed()
 
 
 #Differential expression analysis
-dds <- DESeq(dds)
-A_Bufalin_vs_DMSO <- results(dds, contrast = c('treatment','Bufalin','DMSO'),
+dds <- DESeq2::DESeq(dds)
+A_Bufalin_vs_DMSO <- DESeq2::results(dds, contrast = c('treatment','Bufalin','DMSO'),
                              pAdjustMethod = 'BH')
-B_Lycorine_vs_DMSO <- results(dds, contrast = c('treatment','Lycorine','DMSO'),
+B_Lycorine_vs_DMSO <- DESeq2::results(dds, contrast = c('treatment','Lycorine','DMSO'),
                               pAdjustMethod = 'BH')
-C_Lycorine_vs_Bufalin <- results(dds, contrast = c('treatment','Lycorine','Bufalin'),
+C_Lycorine_vs_Bufalin <- DESeq2::results(dds, contrast = c('treatment','Lycorine','Bufalin'),
                                  pAdjustMethod = 'BH')
 
 
@@ -105,12 +103,12 @@ C_Lycorine_vs_Bufalin <- results(dds, contrast = c('treatment','Lycorine','Bufal
 #
 #
 ## TODO INFO replaced 3.3.2020
-A_Bufalin_vs_DMSO$symbol <- annotation(keys = A_Bufalin_vs_DMSO)
-A_Bufalin_vs_DMSO$entrez <- annotation(keys = A_Bufalin_vs_DMSO)
-B_Lycorine_vs_DMSO$symbol <- annotation(keys = B_Lycorine_vs_DMSO)
-B_Lycorine_vs_DMSO$entrez <- annotation(keys = B_Lycorine_vs_DMSO)
-C_Lycorine_vs_Bufalin$symbol <- annotation(keys = C_Lycorine_vs_Bufalin)
-C_Lycorine_vs_Bufalin$entrez <- annotation(keys = C_Lycorine_vs_Bufalin)
+A_Bufalin_vs_DMSO$symbol <- tRomics::annotation(keys = A_Bufalin_vs_DMSO)
+A_Bufalin_vs_DMSO$entrez <- tRomics::annotation(keys = A_Bufalin_vs_DMSO)
+B_Lycorine_vs_DMSO$symbol <- tRomics::annotation(keys = B_Lycorine_vs_DMSO)
+B_Lycorine_vs_DMSO$entrez <- tRomics::annotation(keys = B_Lycorine_vs_DMSO)
+C_Lycorine_vs_Bufalin$symbol <- tRomics::annotation(keys = C_Lycorine_vs_Bufalin)
+C_Lycorine_vs_Bufalin$entrez <- tRomics::annotation(keys = C_Lycorine_vs_Bufalin)
 
 #write.csv(A_Bufalin_vs_DMSO, 'A_Bufalin_vs_DMSO.csv')
 #write.csv(B_Lycorine_vs_DMSO, 'B_Lycorine_vs_DMSO.csv')
@@ -155,7 +153,7 @@ EnhancedVolcano(B_Lycorine_vs_DMSO_df,
 
 C_Lycorine_vs_Bufalin_df <- as.data.frame(C_Lycorine_vs_Bufalin)
 C_Lycorine_vs_Bufalin_df <- C_Lycorine_vs_Bufalin_df %>% filter(!is.na(padj))
-EnhancedVolcano(C_Lycorine_vs_Bufalin_df,
+EnhancedVolcano::EnhancedVolcano(C_Lycorine_vs_Bufalin_df,
                 title = 'Lycorine vs. Bufalin',
                 lab = as.character(row.names(C_Lycorine_vs_Bufalin_df)),
                 selectLab = '',
