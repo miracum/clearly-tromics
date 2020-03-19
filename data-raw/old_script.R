@@ -8,14 +8,12 @@ library(gplots)
 library(pheatmap)
 library(EnhancedVolcano)
 
-setwd('P:/Hannover/Kreutzer/')
-
 #Input of count matrix
 counttable <- "P:/Hannover/Kreutzer/raw_data/count_data.csv"
 metadata <- "P:/Hannover/Kreutzer/raw_data/metadata.csv"
 
-countdata <- as.matrix(read.csv(counttable, row.names = 1))
-coldata <- read.csv(metadata, row.names = 1)
+countdata <- as.matrix(utils::read.csv(counttable, row.names = 1))
+coldata <- utils::read.csv(metadata, row.names = 1)
 
 ##Checking annotation
 all(rownames(coldata) %in% colnames(countdata))
@@ -23,7 +21,7 @@ all(rownames(coldata) == colnames(countdata))
 
 ##Creating DESeq2dataset object
 
-dds <- DESeqDataSetFromMatrix(countData = countdata,
+dds <- DESeq2::DESeqDataSetFromMatrix(countData = countdata,
                               colData = coldata,
                               design = ~ 0 + treatment)
 
