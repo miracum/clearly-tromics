@@ -1,6 +1,6 @@
 Package: tRomics
 Title: GUI for transcriptome profiling analysis
-Version: 0.0.0.9000
+Version: 0.0.1.9001
 Authors@R: 
     c(person(given = "Lorenz A.",
              family = "Kapsner",
@@ -17,7 +17,7 @@ URL: https://gitlab.miracum.org/clearly/tromics
 BugReports: https://gitlab.miracum.org/clearly/tromics/issues
 Encoding: UTF-8
 VignetteBuilder: knitr
-Date: 2020-03-03
+Date: 2020-03-30
 biocViews: 
 Imports: 
     shiny,
@@ -41,4 +41,4 @@ Suggests:
     testthat,
     processx,
     lintr
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0

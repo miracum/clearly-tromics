@@ -52,7 +52,7 @@ shiny::shinyUI(
           ),
 
 
-          shinydashboard::tabItem(tabName = "batch_hist",
+          shinydashboard::tabItem(tabName = "tab_viz",
                                   module_visualization_ui("moduleVisualization")
           ),
 

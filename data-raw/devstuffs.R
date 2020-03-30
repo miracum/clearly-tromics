@@ -17,7 +17,7 @@ my_desc$del("Maintainer")
 # Vignette Builder
 my_desc$set("VignetteBuilder" = "knitr")
 # Set the version
-my_desc$set_version("0.0.0.9000")
+my_desc$set_version("0.0.1.9001")
 # The title of your package
 my_desc$set(Title = "GUI for transcriptome profiling analysis")
 # The description of your package
@@ -83,6 +83,8 @@ usethis::use_package("lintr", type="Suggests")
 # buildignore
 usethis::use_build_ignore(".gitlab-ci.yml")
 usethis::use_build_ignore("data-raw")
+usethis::use_build_ignore(".vscode")
+usethis::use_build_ignore("/plots/")
 
 # gitignore
 usethis::use_git_ignore("/*")
@@ -108,9 +110,25 @@ usethis::use_git_ignore("/.Rhistory")
 usethis::use_git_ignore("!/*.Rproj")
 usethis::use_git_ignore("/.Rproj*")
 usethis::use_git_ignore("/.RData")
+usethis::use_git_ignore("/.vscode")
+usethis::use_git_ignore("/plots/")
 
 # code coverage
 #covr::package_coverage()
 
 # lint package
 #lintr::lint_package()
+
+# use data
+
+counttable <- "inst/example_data/count_data.csv"
+metadata <- "inst/example_data/metadata.csv"
+design <- "~ 0 + treatment"
+
+example_data <- tRomics::data_input(
+  counttable = counttable,
+  metadata = metadata,
+  design = design
+)
+
+usethis::use_data(example_data, internal = F)

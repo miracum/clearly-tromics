@@ -27,7 +27,7 @@ shiny::shinyServer(function(input, output, session) {
 
     observe({
         req(rv$load_flag)
-        shinyjs::disable("moduleDataimport-geo_load")
+        shinyjs::disable("moduleDataimport-dataimport_example_data")
     })
 
     shiny::observe({

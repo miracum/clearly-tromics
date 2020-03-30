@@ -9,13 +9,14 @@
 #'
 plotVolcano  <- function(
   results,
-  title
+  title,
+  FDR
 ) {
   return(
 
     EnhancedVolcano::EnhancedVolcano(as.data.frame(results)),
      title = title,
-     lab = as.character(row.names(B_Lycorine_vs_DMSO_df)),
+     lab = as.character(row.names(results)),
      selectLab = '',
      subtitle = '',
      x = 'log2FoldChange',
@@ -26,7 +27,7 @@ plotVolcano  <- function(
      FCcutoff = 1,
      transcriptPointSize = 3.0,
      colAlpha = 0.5,
-     ylab = bquote(~-Log[10]~FDR)
+     ylab = bquote(~-Log[10]~FDR) # TODO export package?
 
   )
 }

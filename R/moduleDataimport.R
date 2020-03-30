@@ -16,162 +16,62 @@ module_dataimport_server <- function(input,
                                      rv,
                                      input_re) {
 
-
-  observe({
-    req(input_re()[["moduleDataimport-geo_studyinfos"]])
-
-    ending <- rv$ending <- strsplit(
-      input_re()[["moduleDataimport-geo_studyinfos"]]$name,
-      ".",
-      fixed = T)[[1]]
-
-    if (ending[2] %in% c("csv", "CSV")) {
-      file <- reactiveFileReader(
-        1000, session,
-        input_re()[["moduleDataimport-geo_studyinfos"]]$datapath,
-        data.table::fread,
-        header = T
-      )
-
-      rv$studiesinfo_import <- file()
-    }
-  })
-
   observeEvent(
-    eventExpr = input_re()[["moduleDataimport-geo_load"]],
+    eventExpr = input_re()[["moduleDataimport-dataimport_example_data"]],
     handlerExpr = {
-      shinyjs::disable("geo_studyinfos")
-      shinyjs::disable("import_load_example")
-      rv$studiesinfo_import <- data.table::as.data.table(rv$x)
-      rv$import_load <- TRUE
 
-    }
-  )
+      print("Importing")
 
-  observe({
-    req(rv$import_load)
-    # create studies list
-    rv$geo_studiesinfo <- tryCatch(
-      expr = {
-        ret <- sigident.preproc::diag_studiesinfo(
-          tab = rv$studiesinfo_import,
-          type = "discovery"
-        )
-      },
-      error = function(e) {
-        message(e)
-        ret <- NULL
-      },
-      warning = function(w) {
-        message(w)
-        ret <- NULL
-      },
-      finally = function(f) {
-        return(ret)
-      }
-    )
-
-    if (!is.null(rv$geo_studiesinfo)) {
+      rv$data <- example_data
 
       rv$load_flag <- TRUE
+    })
+
+  observe({
+    req(rv$data)
+
+    print(colnames(SummarizedExperiment::colData(rv$data)))
+
+    if (is.null(rv$updated_choices)) {
+      choices <- sapply(
+        colnames(SummarizedExperiment::colData(rv$data)),
+        FUN = function(x) {
+          return(x)
+        },
+        simplify = F,
+        USE.NAMES = T
+      )
+      # populate group dropdown
+      updateSelectInput(
+        session = session,
+        inputId = "dataimport_grouping_variable",
+        choices = choices
+      )
+      rv$updated_choices <- TRUE
     }
   })
 
-  observe({
-    req(rv$studiesinfo_import)
-
-    # data frame needed for editable datatable
-    rv$x <- as.data.frame(rv$studiesinfo_import)
-
-    output$geo_studies_table <- DT::renderDataTable({
-      DT::datatable(rv$x,
-                    options = list(scrollX = TRUE,
-                                   pageLength = 20,
-                                   dom = "ltip"),
-                    editable = TRUE)
-    })
-
-    # Editable Datatable
-    # https://github.com/rstudio/DT/pull/480
-    proxy <- DT::dataTableProxy("moduleDataimport-geo_studies_table")
-
-    observeEvent(
-      eventExpr =
-        input_re()[["moduleDataimport-geo_studies_table_cell_edit"]],
-      handlerExpr = {
-
-        info <- input_re()[["moduleDataimport-geo_studies_table_cell_edit"]]
-        utils::str(info)
-        i <- info$row
-        j <- info$col
-        v <- info$value
-
-        rv$x[i, j] <-
-          DT::coerceValue(v, rv$x[i, j])
-
-        DT::replaceData(
-          proxy,
-          rv$x,
-          resetPaging = FALSE
-        )
-      })
-
-    output$file_uploaded <- reactive({
-      return(TRUE)
-    })
-    outputOptions(output, "file_uploaded",
-                  suspendWhenHidden = FALSE)
-  })
-
-  observe({
-    req(rv$load_flag)
-
-    withProgress(
-      expr = {
-        # Debugging: comment the following for development purposes.
-        # sigident.preproc::load_geo_data(
-        #   studiesinfo = rv$geo_studiesinfo,
-        #   datadir = rv$datadir,
-        #   plotdir = rv$plotdir,
-        #   idtype = "affy",
-        #   viz_batch_boxp = input_re()[["moduleDataimport-geo_viz_hist"]],
-        #   viz_batch_gpca = input_re()[["moduleDataimport-geo_viz_gpca"]]
-        # )
-
-        # catch diagnosis, sample_metadata, mergeset and mergedset
-        # from global env
-        rv$diagnosis <- eval(parse(text = "diagnosis"),
-                             envir = 1L)
-        rv$sample_metadata <- eval(parse(text = "sample_metadata"),
-                                   envir = 1L)
-        rv$mergeset <- eval(parse(text = "mergeset"),
-                            envir = 1L)
-        rv$mergedset <- eval(parse(text = "mergedset"),
-                             envir = 1L)
-
-        # we are finished with the import
-        rv$import_finished <- TRUE
-      },
-      value = 1 / 1,
-      message = "Loading datasets from GEO db..."
-    )
-  })
-
-
-  # load example button
   observeEvent(
-    eventExpr = input_re()[["moduleDataimport-import_load_example"]],
+    eventExpr = input_re()[["moduleDataimport-dataimport_start_analysis"]],
     handlerExpr = {
-      shinyjs::disable("geo_studyinfos")
-      shinyjs::disable("import_load_example")
-      rv$studiesinfo_import <- data.table::fread(
-        system.file(
-          "demo_files/example_import.csv",
-          package = "sigident.preproc"
-        )
-      )
+      # TODO add progressbar for import etc.
+      rv$data_logtrans <- log_trans(rv$data)
+
+      print("Finished import")
+      rv$import_finished <- TRUE
     }
   )
+
+  observeEvent(
+    eventExpr = input_re()[["moduleDataimport-dataimport_grouping_variable"]],
+    handlerExpr = {
+      rv$grouping_variable <-
+        input_re()[["moduleDataimport-dataimport_grouping_variable"]]
+      message(paste0("Grouping variable: ", rv$grouping_variable))
+    }
+  )
+
+
 }
 
 
@@ -191,53 +91,27 @@ module_dataimport_ui <- function(id) {
         9,
         box(
           title = "Upload study infos",
-          fileInput(inputId = "moduleDataimport-geo_studyinfos",
-                    label = paste0("Please one CSV file containing the ",
-                                   "study infos."),
-                    accept = c(".csv", "text/csv")
-          ),
-          tags$hr(),
           actionButton(
-            inputId = "moduleDataimport-import_load_example",
-            label = "Load example"
-          ),
-          width = 12
+            inputId = ns("dataimport_example_data"),
+            label = "Load example data"
+          )
         )
       ),
       column(
         3,
         box(
-          title = "Plot batch effects",
-          helpText("Caution: this takes some additional time"),
-          checkboxInput(
-            inputId = "moduleDataimport-geo_viz_hist",
-            label = "Histogram",
-            value = FALSE
+          title = "Study definitions",
+          selectInput(
+            inputId = ns("dataimport_grouping_variable"),
+            label = "Select grouping variable",
+            choices = NULL,
+            multiple = FALSE
           ),
-          checkboxInput(
-            inputId = "moduleDataimport-geo_viz_gpca",
-            label = "gPCA",
-            value = FALSE
-          ),
-          conditionalPanel(
-            condition = "output['moduleDataimport-file_uploaded']",
-            actionButton(
-              inputId = "moduleDataimport-geo_load",
-              label = "Load studies",
-              icon = icon("download")
-            )
-          ),
-          width = 12
-        )
-      ),
-      conditionalPanel(
-        condition = "output['moduleDataimport-file_uploaded']",
-        box(
-          title = "Study infos",
-          DT::dataTableOutput(
-            "moduleDataimport-geo_studies_table"
-          ),
-          width = 12
+          tags$hr(),
+          actionButton(
+            inputId = ns("dataimport_start_analysis"),
+            label = "Start analysis"
+          )
         )
       )
     )

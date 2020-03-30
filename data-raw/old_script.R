@@ -32,36 +32,47 @@ library(EnhancedVolcano)
 # dds <- dds[keep,]
 # nrow(dds)
 ## TODO INFO replaced 30.03.2020
-data_input(counttable = 'count_data.csv',
-           metadata = 'metadata.csv',
-           design = ~ 0 + treatment)
+dds <- data_input(counttable = "inst/example_data/count_data.csv",
+                  metadata = "inst/example_data/metadata.csv",
+                  design = "~ 0 + treatment")
 
 
 #rlog transformation
-rld <- DESeq2::rlog(dds, blind = F)
-utils::head(assay(rld), 3)
+# rld <- DESeq2::rlog(dds, blind = F)
+# utils::head(assay(rld), 3)
+rld <- log_trans(dds)
 
 #PCA
-pcaData <- DESeq2::plotPCA(rld,intgroup = 'treatment',returnData = T)
-pcaData
-
-percentVar <- round(100*attr(pcaData, 'percentVar'))
-ggplot2::ggplot(pcaData, aes(x=PC1, y=PC2, color=treatment)) +
-  ggplot2:geom_point(size=3) +
-  ggplot2::xlab(paste0('PC1: ', percentVar[1], '% variance')) +
-  ggplot2::ylab(paste0('PC2: ', percentVar[2], '% variance')) +
-  ggplot2::coord_fixed()
+# pcaData <- DESeq2::plotPCA(rld,intgroup = 'treatment',returnData = T)
+# pcaData
+#
+# percentVar <- round(100*attr(pcaData, 'percentVar'))
+# ggplot2::ggplot(pcaData, ggplot2::aes(x=PC1, y=PC2, color=treatment)) +
+#   ggplot2::geom_point(size=3) +
+#   ggplot2::xlab(paste0('PC1: ', percentVar[1], '% variance')) +
+#   ggplot2::ylab(paste0('PC2: ', percentVar[2], '% variance')) +
+#   ggplot2::coord_fixed()
+plot_pca(
+  rld = rld,
+  filename = "plots/PCA_plot.png",
+  color_var = "treatment"
+)
 
 
 #MDS
-sampleDists <- stats::dist(t(assay(rld)))
-sampleDistMatrix <- as.matrix( sampleDists )
-mds <- as.data.frame(colData(rld))  %>%
-  cbind(stats::cmdscale(sampleDistMatrix))
-
-ggplot2::ggplot(mds, aes(x = `1`, y = `2`, color = treatment)) +
-  ggplot2::geom_point(size = 3) +
-  ggplot2::coord_fixed()
+# sampleDists <- stats::dist(t(assay(rld)))
+# sampleDistMatrix <- as.matrix( sampleDists )
+# mds <- as.data.frame(colData(rld))  %>%
+#   cbind(stats::cmdscale(sampleDistMatrix))
+#
+# ggplot2::ggplot(mds, aes(x = `1`, y = `2`, color = treatment)) +
+#   ggplot2::geom_point(size = 3) +
+#   ggplot2::coord_fixed()
+plot_mds(
+  rld = rld,
+  filename = "plots/MDS_plot.png",
+  color_var = "treatment"
+)
 
 
 #Differential expression analysis
