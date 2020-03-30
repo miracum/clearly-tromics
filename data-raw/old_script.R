@@ -8,28 +8,34 @@ library(gplots)
 library(pheatmap)
 library(EnhancedVolcano)
 
-#Input of count matrix
-counttable <- "P:/Hannover/Kreutzer/raw_data/count_data.csv"
-metadata <- "P:/Hannover/Kreutzer/raw_data/metadata.csv"
 
-countdata <- as.matrix(utils::read.csv(counttable, row.names = 1))
-coldata <- utils::read.csv(metadata, row.names = 1)
+# #Input of count matrix
+# counttable <- "P:/Hannover/Kreutzer/raw_data/count_data.csv"
+# metadata <- "P:/Hannover/Kreutzer/raw_data/metadata.csv"
+#
+# countdata <- as.matrix(utils::read.csv(counttable, row.names = 1))
+# coldata <- utils::read.csv(metadata, row.names = 1)
+#
+# ##Checking annotation
+# all(rownames(coldata) %in% colnames(countdata))
+# all(rownames(coldata) == colnames(countdata))
+#
+# ##Creating DESeq2dataset object
+#
+# dds <- DESeq2::DESeqDataSetFromMatrix(countData = countdata,
+#                               colData = coldata,
+#                               design = ~ 0 + treatment)
+#
+# #Pre-filtering
+# nrow(dds)
+# keep <- rowSums(DESeq2::counts(dds)) >= 10
+# dds <- dds[keep,]
+# nrow(dds)
+## TODO INFO replaced 30.03.2020
+data_input(counttable = 'count_data.csv',
+           metadata = 'metadata.csv',
+           design = ~ 0 + treatment)
 
-##Checking annotation
-all(rownames(coldata) %in% colnames(countdata))
-all(rownames(coldata) == colnames(countdata))
-
-##Creating DESeq2dataset object
-
-dds <- DESeq2::DESeqDataSetFromMatrix(countData = countdata,
-                              colData = coldata,
-                              design = ~ 0 + treatment)
-
-#Pre-filtering
-nrow(dds)
-keep <- rowSums(counts(dds)) >= 10
-dds <- dds[keep,]
-nrow(dds)
 
 #rlog transformation
 rld <- DESeq2::rlog(dds, blind = F)
@@ -129,46 +135,50 @@ tRomics::plot_heatmap(
 )
 
 #volcano plot
+## TODO INFO replaced 30.03.2020
 #tiff("Volcano.tiff", width = 800, height = 800, units = 'px')
 
-B_Lycorine_vs_DMSO_df <- as.data.frame(B_Lycorine_vs_DMSO)
-B_Lycorine_vs_DMSO_df <- B_Lycorine_vs_DMSO_df %>% filter(!is.na(padj))
-EnhancedVolcano(B_Lycorine_vs_DMSO_df,
-                title = 'Lycorine vs. DMSO',
-                lab = as.character(row.names(B_Lycorine_vs_DMSO_df)),
-                selectLab = '',
-                subtitle = '',
-                x = 'log2FoldChange',
-                y = 'padj',
-                legend=c('not significant','Log (base 2) fold-change','FDR',
-                         'FDR & Log (base 2) fold-change'),
-                pCutoff = 0.05,
-                FCcutoff = 1,
-                transcriptPointSize = 3.0,
-                colAlpha = 0.5,
-                xlim = c(-6,6),
-                ylim = c(0,100),
-                ylab = bquote(~-Log[10]~FDR))
-#dev.off()
+# B_Lycorine_vs_DMSO_df <- as.data.frame(B_Lycorine_vs_DMSO)
+# B_Lycorine_vs_DMSO_df <- B_Lycorine_vs_DMSO_df %>% filter(!is.na(padj))
+# EnhancedVolcano(B_Lycorine_vs_DMSO_df,
+#                 title = 'Lycorine vs. DMSO',
+#                 lab = as.character(row.names(B_Lycorine_vs_DMSO_df)),
+#                 selectLab = '',
+#                 subtitle = '',
+#                 x = 'log2FoldChange',
+#                 y = 'padj',
+#                 legend=c('not significant','Log (base 2) fold-change','FDR',
+#                          'FDR & Log (base 2) fold-change'),
+#                 pCutoff = 0.05,
+#                 FCcutoff = 1,
+#                 transcriptPointSize = 3.0,
+#                 colAlpha = 0.5,
+#                 xlim = c(-6,6),
+#                 ylim = c(0,100),
+#                 ylab = bquote(~-Log[10]~FDR))
+# #dev.off()
+#
+# C_Lycorine_vs_Bufalin_df <- as.data.frame(C_Lycorine_vs_Bufalin)
+# C_Lycorine_vs_Bufalin_df <- C_Lycorine_vs_Bufalin_df %>% filter(!is.na(padj))
+# EnhancedVolcano::EnhancedVolcano(C_Lycorine_vs_Bufalin_df,
+#                 title = 'Lycorine vs. Bufalin',
+#                 lab = as.character(row.names(C_Lycorine_vs_Bufalin_df)),
+#                 selectLab = '',
+#                 subtitle = '',
+#                 x = 'log2FoldChange',
+#                 y = 'padj',
+#                 legend=c('not significant','Log (base 2) fold-change','FDR',
+#                          'FDR & Log (base 2) fold-change'),
+#                 pCutoff = 0.05,
+#                 FCcutoff = 1,
+#                 transcriptPointSize = 3.0,
+#                 colAlpha = 0.5,
+#                 xlim = c(-10,10),
+#                 ylim = c(0,100),
+#                 ylab = bquote(~-Log[10]~FDR))
 
-C_Lycorine_vs_Bufalin_df <- as.data.frame(C_Lycorine_vs_Bufalin)
-C_Lycorine_vs_Bufalin_df <- C_Lycorine_vs_Bufalin_df %>% filter(!is.na(padj))
-EnhancedVolcano::EnhancedVolcano(C_Lycorine_vs_Bufalin_df,
-                title = 'Lycorine vs. Bufalin',
-                lab = as.character(row.names(C_Lycorine_vs_Bufalin_df)),
-                selectLab = '',
-                subtitle = '',
-                x = 'log2FoldChange',
-                y = 'padj',
-                legend=c('not significant','Log (base 2) fold-change','FDR',
-                         'FDR & Log (base 2) fold-change'),
-                pCutoff = 0.05,
-                FCcutoff = 1,
-                transcriptPointSize = 3.0,
-                colAlpha = 0.5,
-                xlim = c(-10,10),
-                ylim = c(0,100),
-                ylab = bquote(~-Log[10]~FDR))
+tRomics::plotVolcano(results = B_Lycorine_vs_DMSO, title = 'Lycorine vs DMSO')
+tRomics::plotVolcano(results = C_Lycorine_vs_Bufalin, title = 'LYcorine vs Bufalin')
 
 A_Bufalin_vs_DMSO_sig <- as.data.frame(A_Bufalin_vs_DMSO) %>% filter(padj < 0.05 & abs(log2FoldChange) >1)
 B_Lycorine_vs_DMSO_sig <- as.data.frame(B_Lycorine_vs_DMSO) %>% filter(padj < 0.05 & abs(log2FoldChange) >1)
