@@ -19,7 +19,9 @@ test_that(
         "moduleDataimport.R" = NULL,
         "moduleDEG.R" = NULL,
         "moduleVisualization.R" = NULL,
-        "plotting.R" = NULL
+        "plotting.R" = NULL,
+        "plotVulcano.R" = NULL,
+        "data_input.R" = NULL
       ),
       "tests/testthat" = list(
         "test-startup.R" = NULL,
