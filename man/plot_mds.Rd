@@ -7,8 +7,12 @@
 plot_mds(rld, filename, color_var)
 }
 \arguments{
+\item{rld}{Object containing log-transformed counts}
+
 \item{filename}{A character string. The filename.}
+
+\item{color_var}{Variable deciding group coloring}
 }
 \description{
-Helper function to create roc plots
+Function to create multi-dimensional scaling plot
 }

@@ -8,15 +8,18 @@ annotation(
   keys,
   orgdb = "org.Rn.eg.db",
   column = "SYMBOL",
-  keytype = "ENSEMBL",
-  multi_vals = "first"
+  keytype = "ENSEMBL"
 )
 }
 \arguments{
-\item{filename}{A character string. The filename.}
+\item{keys}{existing annotation}
 
-\item{ngenes}{An integer. Number of genes to display (default: 1000).}
+\item{column}{Data to be retrieved from the database}
+
+\item{keytype}{Type of existing annotation}
+
+\item{orgdn}{A annotation package}
 }
 \description{
-Helper function to create roc plots
+Function to add common annotations from several common databases
 }

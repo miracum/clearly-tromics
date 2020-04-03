@@ -2,10 +2,10 @@
 % Please edit documentation in R/data_input.R
 \name{log_trans}
 \alias{log_trans}
-\title{data_input}
+\title{log_trans}
 \usage{
 log_trans(data)
 }
 \description{
-Function for data input and pre-filtering
+Wrapper function for log-transformation of counts
 }

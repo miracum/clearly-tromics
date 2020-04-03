@@ -1,25 +1,25 @@
 #' @title annotation
 #'
-#' @description Helper function to create roc plots
+#' @description Function to add common annotations from several common databases
 #'
-#' @param filename A character string. The filename.
-#' @param rld
-#' @param ngenes An integer. Number of genes to display (default: 1000).
+#' @param keys existing annotation
+#' @param orgdn A annotation package
+#' @param column Data to be retrieved from the database
+#' @param keytype Type of existing annotation
 #'
 #' @export
 annotation <- function(
   keys,
   orgdb = "org.Rn.eg.db",
   column = "SYMBOL",
-  keytype = "ENSEMBL",
-  multi_vals = "first"
+  keytype = "ENSEMBL"
 ) {
   return(
     AnnotationDbi::mapIds(
-      x = orgDB,
+      x = orgdb,
       keys = row.names(keys),
       column = column,
       keytype = keytype,
-      multiVals = multi_vals)
+      multiVals = "first")
   )
 }

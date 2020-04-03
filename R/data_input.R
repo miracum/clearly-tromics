@@ -24,12 +24,13 @@ data_input <- function(
 }
 
 
-#' @title data_input
+#' @title log_trans
 #'
-#' @description Function for data input and pre-filtering
+#' @description Wrapper function for log-transformation of counts
+#'
 #' @export
 log_trans <- function(data) {
-    rld <- DESeq2::rlog(data, blind = F)
+    rld <- DESeq2::rlog(dds, blind = F)
     return(rld)
 }
 

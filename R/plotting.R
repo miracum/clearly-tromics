@@ -1,10 +1,10 @@
 #' @title plot_pca
 #'
-#' @description Helper function to create roc plots
+#' @description Function for principle component analysis and plotting
 #'
 #' @param filename A character string. The filename.
-#' @param rld
-#' @param #TODO
+#' @param rld Object containing log-transformed counts
+#' @param color_var Variable deciding group coloring
 #'
 #' @export
 plot_pca <- function(rld,
@@ -30,7 +30,7 @@ plot_pca <- function(rld,
       data = pcaData,
       ggplot2::aes_string(x = "PC1", y = "PC2", color = color_var)
     ) +
-      ggplot2::geom_point(size=3) +
+      ggplot2::geom_point(size = 3) +
       ggplot2::xlab(paste0("PC1: ", percentVar[1], "% variance")) +
       ggplot2::ylab(paste0("PC2: ", percentVar[2], "% variance")) +
       ggplot2::coord_fixed()
@@ -42,7 +42,7 @@ plot_pca <- function(rld,
 
 #' @title plot_mds
 #'
-#' @description Helper function to create roc plots
+#' @description Function to create multi-dimensional scaling plot
 #'
 #' @inheritParams plot_pca
 #'
