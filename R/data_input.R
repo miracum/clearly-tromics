@@ -28,6 +28,8 @@ data_input <- function(
 #'
 #' @description Wrapper function for log-transformation of counts
 #'
+#' @param data TODO doku
+#'
 #' @export
 log_trans <- function(data) {
     rld <- DESeq2::rlog(dds, blind = F)

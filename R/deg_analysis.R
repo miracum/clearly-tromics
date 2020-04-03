@@ -5,19 +5,25 @@
 #' @param group_variable Category of comparison
 #' @param compare_group attribute group in comparison
 #' @param control group in comparison
-## #' @export 
+#'
+#' @inheritParams log_trans
+#'
+#' @export
 
 deg_analysis <- function(
-group_variable,
-compare_group,
-control_group
+  data,
+  group_variable,
+  compare_group,
+  control_group
 ) {
 
-dds <- DESeq2::DESeq(dds)
+  results_object <- DESeq2::results(
+    object = dds,
+    contrast = c(group_variable,
+                 compare_group,
+                 control_group),
+    pAdjustMethod = "BH"
+  )
 
-results_object <- DESeq2::results(dds, contrast = c(group_variable,
-                                  compare_group, control_group,
-                                  pAdjustMethod = "BH"))
-
-return(results_object) }
-
+  return(results_object)
+}

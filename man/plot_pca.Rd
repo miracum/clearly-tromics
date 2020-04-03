@@ -7,10 +7,12 @@
 plot_pca(rld, filename, color_var)
 }
 \arguments{
+\item{rld}{Object containing log-transformed counts}
+
 \item{filename}{A character string. The filename.}
 
-\item{#TODO}{}
+\item{color_var}{Variable deciding group coloring}
 }
 \description{
-Helper function to create roc plots
+Function for principle component analysis and plotting
 }

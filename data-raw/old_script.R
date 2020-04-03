@@ -42,6 +42,8 @@ dds <- data_input(counttable = "inst/example_data/count_data.csv",
 # utils::head(assay(rld), 3)
 rld <- log_trans(dds)
 
+grouping_variable <- "treatment"
+
 #PCA
 # pcaData <- DESeq2::plotPCA(rld,intgroup = 'treatment',returnData = T)
 # pcaData
@@ -55,7 +57,7 @@ rld <- log_trans(dds)
 plot_pca(
   rld = rld,
   filename = "plots/PCA_plot.png",
-  color_var = "treatment"
+  color_var = grouping_variable
 )
 
 
@@ -71,18 +73,48 @@ plot_pca(
 plot_mds(
   rld = rld,
   filename = "plots/MDS_plot.png",
-  color_var = "treatment"
+  color_var = grouping_variable
 )
 
 
-#Differential expression analysis
+
+groups <- as.character(unique(SummarizedExperiment::colData(dds)[[grouping_variable]]))
+contrast_list <- gtools::permutations(n = length(groups), r = 2, v = groups)
+colnames(contrast_list) <- c("compare", "control")
+
+rv <- list()
+
 dds <- DESeq2::DESeq(dds)
-A_Bufalin_vs_DMSO <- DESeq2::results(dds, contrast = c('treatment','Bufalin','DMSO'),
-                             pAdjustMethod = 'BH')
-B_Lycorine_vs_DMSO <- DESeq2::results(dds, contrast = c('treatment','Lycorine','DMSO'),
-                              pAdjustMethod = 'BH')
-C_Lycorine_vs_Bufalin <- DESeq2::results(dds, contrast = c('treatment','Lycorine','Bufalin'),
-                                 pAdjustMethod = 'BH')
+
+for (contr in seq_len(nrow(contrast_list))) {
+
+  message(contr)
+
+  list_extract <- contrast_list[contr, ]
+  compare_group <- list_extract[["compare"]]
+  control_group <- list_extract[["control"]]
+
+  output_name <- tolower(
+    paste(grouping_variable, compare_group, control_group, sep = "_")
+  )
+
+  rv[[output_name]] <- deg_analysis(
+    data = dds,
+    group_variable = grouping_variable,
+    compare_group = compare_group,
+    control_group = control_group
+  )
+}
+
+
+# #Differential expression analysis
+# dds <- DESeq2::DESeq(dds)
+# A_Bufalin_vs_DMSO <- DESeq2::results(dds, contrast = c('treatment','Bufalin','DMSO'),
+#                              pAdjustMethod = 'BH')
+# B_Lycorine_vs_DMSO <- DESeq2::results(dds, contrast = c('treatment','Lycorine','DMSO'),
+#                               pAdjustMethod = 'BH')
+# C_Lycorine_vs_Bufalin <- DESeq2::results(dds, contrast = c('treatment','Lycorine','Bufalin'),
+#                                  pAdjustMethod = 'BH')
 
 
 
@@ -120,12 +152,20 @@ C_Lycorine_vs_Bufalin <- DESeq2::results(dds, contrast = c('treatment','Lycorine
 #
 #
 ## TODO INFO replaced 3.3.2020
-A_Bufalin_vs_DMSO$symbol <- tRomics::annotation(keys = A_Bufalin_vs_DMSO)
-A_Bufalin_vs_DMSO$entrez <- tRomics::annotation(keys = A_Bufalin_vs_DMSO)
-B_Lycorine_vs_DMSO$symbol <- tRomics::annotation(keys = B_Lycorine_vs_DMSO)
-B_Lycorine_vs_DMSO$entrez <- tRomics::annotation(keys = B_Lycorine_vs_DMSO)
-C_Lycorine_vs_Bufalin$symbol <- tRomics::annotation(keys = C_Lycorine_vs_Bufalin)
-C_Lycorine_vs_Bufalin$entrez <- tRomics::annotation(keys = C_Lycorine_vs_Bufalin)
+# A_Bufalin_vs_DMSO$symbol <- tRomics::annotation(keys = A_Bufalin_vs_DMSO)
+# A_Bufalin_vs_DMSO$entrez <- tRomics::annotation(keys = A_Bufalin_vs_DMSO)
+# B_Lycorine_vs_DMSO$symbol <- tRomics::annotation(keys = B_Lycorine_vs_DMSO)
+# B_Lycorine_vs_DMSO$entrez <- tRomics::annotation(keys = B_Lycorine_vs_DMSO)
+# C_Lycorine_vs_Bufalin$symbol <- tRomics::annotation(keys = C_Lycorine_vs_Bufalin)
+# C_Lycorine_vs_Bufalin$entrez <- tRomics::annotation(keys = C_Lycorine_vs_Bufalin)
+
+
+for (key in names(rv)) {
+  message(key)
+
+  rv[[key]]$symbol <- annotation(keys = row.names(rv[[key]]), column = "SYMBOL")
+  rv[[key]]$entrez <- annotation(keys = row.names(rv[[key]]), column = "ENTREZID")
+}
 
 #write.csv(A_Bufalin_vs_DMSO, 'A_Bufalin_vs_DMSO.csv')
 #write.csv(B_Lycorine_vs_DMSO, 'B_Lycorine_vs_DMSO.csv')
@@ -139,9 +179,9 @@ C_Lycorine_vs_Bufalin$entrez <- tRomics::annotation(keys = C_Lycorine_vs_Bufalin
 #
 # annotation_data <- as.data.frame(colData(rld))
 # pheatmap(matrix, scale = 'row',show_rownames = F, color = bluered(100), fontsize = 8, annotation_col = coldata, cluster_cols = F)
-tRomics::plot_heatmap(
+plot_heatmap(
   rld = rld,
-  filename = "./heatmap.png",
+  filename = "plots/heatmap.png",
   ngenes = 1000
 )
 
@@ -188,7 +228,7 @@ tRomics::plot_heatmap(
 #                 ylim = c(0,100),
 #                 ylab = bquote(~-Log[10]~FDR))
 
-tRomics::plotVolcano(results = B_Lycorine_vs_DMSO, title = 'Lycorine vs DMSO')
+tRomics::plotVolcano(results = rv[["treatment_lycorine_dmso"]], title = 'Lycorine vs DMSO')
 tRomics::plotVolcano(results = C_Lycorine_vs_Bufalin, title = 'LYcorine vs Bufalin')
 
 A_Bufalin_vs_DMSO_sig <- as.data.frame(A_Bufalin_vs_DMSO) %>% filter(padj < 0.05 & abs(log2FoldChange) >1)

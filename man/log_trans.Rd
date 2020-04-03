@@ -6,6 +6,9 @@
 \usage{
 log_trans(data)
 }
+\arguments{
+\item{data}{TODO doku}
+}
 \description{
 Wrapper function for log-transformation of counts
 }

@@ -4,12 +4,7 @@
 \alias{annotation}
 \title{annotation}
 \usage{
-annotation(
-  keys,
-  orgdb = "org.Rn.eg.db",
-  column = "SYMBOL",
-  keytype = "ENSEMBL"
-)
+annotation(keys, orgdb = "org.Rn.eg.db", column, keytype = "ENSEMBL")
 }
 \arguments{
 \item{keys}{existing annotation}

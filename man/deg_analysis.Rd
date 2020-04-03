@@ -4,9 +4,11 @@
 \alias{deg_analysis}
 \title{deg_analysis}
 \usage{
-deg_analysis(group_variable, compare_group, control_group)
+deg_analysis(data, group_variable, compare_group, control_group)
 }
 \arguments{
+\item{data}{TODO doku}
+
 \item{group_variable}{Category of comparison}
 
 \item{compare_group}{attribute group in comparison}

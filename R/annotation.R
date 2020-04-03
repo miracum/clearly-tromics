@@ -11,15 +11,24 @@
 annotation <- function(
   keys,
   orgdb = "org.Rn.eg.db",
-  column = "SYMBOL",
+  column,
   keytype = "ENSEMBL"
 ) {
-  return(
-    AnnotationDbi::mapIds(
-      x = orgdb,
-      keys = row.names(keys),
+
+
+  if (!(orgdb %in% installed.packages()[,"Package"])) {
+    BiocManager::install(
+      pkgs = orgdb,
+      update = F
+    )
+  }
+
+  ret <- AnnotationDbi::mapIds(
+      x = eval(parse(text = orgdb)),
+      keys = keys,
       column = column,
       keytype = keytype,
-      multiVals = "first")
+      multiVals = "first"
   )
+  return(ret)
 }

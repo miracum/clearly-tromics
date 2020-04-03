@@ -71,3 +71,83 @@ plot_mds <- function(rld,
   })
   grDevices::dev.off()
 }
+
+
+#' @title plot_heatmap
+#'
+#' @description Function to create multi-dimensional scaling plot
+#'
+#' @inheritParams plot_pca
+#'
+#' @export
+plot_heatmap <- function(rld,
+                         filename,
+                         ngenes = 1000) {
+
+  ##heatmap
+  top_variance_genes <- utils::head(
+    order(
+      matrixStats::rowVars(
+        SummarizedExperiment::assay(rld)),
+      decreasing=T),
+    ngenes
+  )
+  var_mat <- SummarizedExperiment::assay(rld)[top_variance_genes, ]
+  var_mat <- var_mat - rowMeans(var_mat)
+
+  annotation_data <- as.data.frame(SummarizedExperiment::colData(rld))
+
+
+  grDevices::png(
+    filename = filename,
+    res = 150,
+    height = 1000,
+    width = 1500
+  )
+  print({
+    pheatmap::pheatmap(
+      var_mat,
+      scale = 'row',
+      show_rownames = F,
+      color = gplots::bluered(100),
+      fontsize = 8,
+      annotation_col = annotation_data,
+      cluster_cols = F
+    )
+  })
+  grDevices::dev.off()
+}
+
+
+
+#' @title plot_volcano
+#'
+#' @description Function for plotting the results of differential expression analysis as volcano plot
+#'
+#' @param results The resultsfile.
+#' @param title A characte string. The plot title
+#'
+#' @export
+#'
+plot_volcano  <- function(
+  results,
+  title,
+  FDR
+) {
+
+
+  EnhancedVolcano::EnhancedVolcano(as.data.frame(results)),
+  title = title,
+  lab = as.character(row.names(results)),
+  selectLab = '',
+  subtitle = '',
+  x = 'log2FoldChange',
+  y = 'padj',
+  legend=c('not significant','Log (base 2) fold-change','FDR',
+           'FDR & Log (base 2) fold-change'),
+  pCutoff = 0.05,
+  FCcutoff = 1,
+  transcriptPointSize = 3.0,
+  colAlpha = 0.5,
+  ylab = bquote(~-Log[10]~FDR) # TODO export package?
+}

@@ -2,6 +2,7 @@
 
 export(annotation)
 export(data_input)
+export(deg_analysis)
 export(launch_app)
 export(log_trans)
 export(module_dataimport_server)
