@@ -4,10 +4,10 @@
 \alias{plot_pca}
 \title{plot_pca}
 \usage{
-plot_pca(rld, filename, color_var)
+plot_pca(data, filename, color_var)
 }
 \arguments{
-\item{rld}{Object containing log-transformed counts}
+\item{data}{Object containing log-transformed counts}
 
 \item{filename}{A character string. The filename.}
 

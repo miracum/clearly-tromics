@@ -18,7 +18,7 @@ deg_analysis <- function(
 ) {
 
   results_object <- DESeq2::results(
-    object = dds,
+    object = data,
     contrast = c(group_variable,
                  compare_group,
                  control_group),

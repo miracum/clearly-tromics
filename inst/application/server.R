@@ -25,13 +25,8 @@ shiny::shinyServer(function(input, output, session) {
         input_re = input_reactive
     )
 
-    observe({
-        req(rv$load_flag)
-        shinyjs::disable("moduleDataimport-dataimport_example_data")
-    })
-
     shiny::observe({
-        shiny::req(rv$import_finished)
+        shiny::req(rv$finished_plotting)
 
         output$menu <- shinydashboard::renderMenu({
             shinydashboard::sidebarMenu(
@@ -45,6 +40,11 @@ shiny::shinyServer(function(input, output, session) {
                 )
             )
         })
+        shinydashboard::updateTabItems(
+            session = session,
+            inputId = "tabs",
+            selected = "tab_viz"
+        )
     })
 
 

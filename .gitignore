@@ -28,3 +28,4 @@
 !/inst/example_data/*.csv
 /plots/
 !/data/
+!/.lintr

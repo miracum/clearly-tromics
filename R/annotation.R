@@ -1,27 +1,22 @@
-#' @title annotation
+#' @title deg_annotation
 #'
-#' @description Function to add common annotations from several common databases
+#' @description Function to add common annotations from
+#'   several common databases
 #'
 #' @param keys existing annotation
-#' @param orgdn A annotation package
+#' @param orgdb A annotation package
 #' @param column Data to be retrieved from the database
 #' @param keytype Type of existing annotation
 #'
 #' @export
-annotation <- function(
+deg_annotation <- function(
   keys,
-  orgdb = "org.Rn.eg.db",
+  orgdb,
   column,
   keytype = "ENSEMBL"
 ) {
 
-
-  if (!(orgdb %in% installed.packages()[,"Package"])) {
-    BiocManager::install(
-      pkgs = orgdb,
-      update = F
-    )
-  }
+  require(orgdb, character.only = TRUE)
 
   ret <- AnnotationDbi::mapIds(
       x = eval(parse(text = orgdb)),

@@ -32,7 +32,6 @@ data_input <- function(
 #'
 #' @export
 log_trans <- function(data) {
-    rld <- DESeq2::rlog(dds, blind = F)
+    rld <- DESeq2::rlog(data, blind = F)
     return(rld)
 }
-

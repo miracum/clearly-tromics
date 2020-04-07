@@ -1,15 +1,15 @@
 Package: tRomics
 Title: GUI for transcriptome profiling analysis
-Version: 0.0.1.9001
+Version: 0.0.1.9003
 Authors@R: 
     c(person(given = "Lorenz A.",
              family = "Kapsner",
-             role = c("cre", "aut"),
-             email = "lorenz.kapsner@uk-erlangen.de",
+             role = "aut",
              comment = c(ORCID = "0000-0003-1866-860X")),
       person(given = "Maximilian",
              family = "Fuchs",
-             role = "aut"))
+             role = c("cre", "aut"),
+             email = "maximilian.fuchs@fau.de"))
 Description: GUI for integrative in silico analysis for deciphering global transcriptome profiling data.
 License: GPL-3
 LazyData: true
@@ -17,8 +17,10 @@ URL: https://gitlab.miracum.org/clearly/tromics
 BugReports: https://gitlab.miracum.org/clearly/tromics/issues
 Encoding: UTF-8
 VignetteBuilder: knitr
-Date: 2020-03-30
+Date: 2020-04-07
 biocViews: 
+Depends: 
+    R (>= 2.10)
 Imports: 
     shiny,
     shinydashboard,
@@ -27,15 +29,14 @@ Imports:
     DT,
     data.table,
     DESeq2,
-    gdata,
     gplots,
     ggplot2,
-    dplyr,
     AnnotationDbi,
     pheatmap,
     EnhancedVolcano,
     matrixStats,
-    SummarizedExperiment
+    SummarizedExperiment,
+    BiocManager
 Suggests: 
     knitr,
     testthat,

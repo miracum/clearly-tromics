@@ -19,17 +19,52 @@ module_visualization_server <- function(input,
   observe({
     req(rv$data_logtrans)
 
+    # Create a Progress object
+    progress <- shiny::Progress$new()
+    # Make sure it closes when we exit this reactive, even if
+    # there's an error
+    on.exit(progress$close())
+    progress$set(
+      message = paste0("Plotting"),
+      value = 0
+    )
+
+    progress$inc(
+      1 / 3,
+      detail = paste("... plotting PCA ...")
+    )
+
     plot_pca(
-      rld = rv$data_logtrans,
+      data = rv$data_logtrans,
       filename = paste0(rv$plotdir, "PCA_plot.png"),
       color_var = rv$grouping_variable
     )
 
+    progress$inc(
+      1 / 3,
+      detail = paste("... plotting MDS ...")
+    )
+
     plot_mds(
-      rld = rv$data_logtrans,
+      data = rv$data_logtrans,
       filename = paste0(rv$plotdir, "MDS_plot.png"),
       color_var = rv$grouping_variable
     )
+
+    progress$inc(
+      1 / 3,
+      detail = paste("... plotting heatmap ...")
+    )
+
+    plot_heatmap(
+      data = rv$data_logtrans,
+      filename = paste0(rv$plotdir, "DEG_heatmap.png"),
+      ngenes = 1000
+    )
+
+    rv$finished_plotting <- TRUE
+
+    progress$close()
   })
 
 
@@ -45,6 +80,21 @@ module_visualization_server <- function(input,
       },
       deleteFile = FALSE)
 
+    output$dl_viz_pca <- downloadHandler(
+      filename = function() {
+        paste0("PCA_plot.png")
+      },
+      content = function(file) {
+        file.copy(paste0(
+          rv$plotdir,
+          "PCA_plot.png"
+        ),
+        file)
+      },
+      contentType = "image/png"
+    )
+
+
     output$viz_mds <- renderImage(
       expr = {
         filename <- paste0(
@@ -55,6 +105,20 @@ module_visualization_server <- function(input,
         list(src = filename)
       },
       deleteFile = FALSE)
+
+    output$dl_viz_mds <- downloadHandler(
+      filename = function() {
+        paste0("MDS_plot.png")
+      },
+      content = function(file) {
+        file.copy(paste0(
+          rv$plotdir,
+          "MDS_plot.png"
+        ),
+        file)
+      },
+      contentType = "image/png"
+    )
   })
 
 
@@ -74,6 +138,18 @@ module_visualization_ui <- function(id) {
   tagList(# first row
     box(
       title = "PCA plot",
+      div(class = "row",
+          style = "text-align: center",
+          downloadButton(
+            outputId = ns("dl_viz_pca"),
+            label = "Download PCA plot",
+            style = paste0(
+              "white-space: normal; ",
+              "text-align:center; ",
+              "padding: 9.5px 9.5px 9.5px 9.5px; ",
+              "margin: 6px 10px 6px 10px;")
+          )
+      ),
       imageOutput(
         outputId = ns("viz_pca")
       ),
@@ -87,6 +163,18 @@ module_visualization_ui <- function(id) {
     ),
     box(
       title = "MDS plot",
+      div(class = "row",
+          style = "text-align: center",
+          downloadButton(
+            outputId = ns("dl_viz_mds"),
+            label = "Download MDS plot",
+            style = paste0(
+              "white-space: normal; ",
+              "text-align:center; ",
+              "padding: 9.5px 9.5px 9.5px 9.5px; ",
+              "margin: 6px 10px 6px 10px;")
+          )
+      ),
       imageOutput(
         outputId = ns("viz_mds")
       ),

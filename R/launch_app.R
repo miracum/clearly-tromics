@@ -31,10 +31,19 @@ launch_app <- function(port=3838,
   # create temp-dirs
   dir.create(paste0(dir, "/csv/"))
   dir.create(paste0(dir, "/plots/"))
-  dir.create(paste0(dir, "/datadir/"))
 
   options(shiny.port = port)
   shiny::shinyAppDir(
     appDir = system.file("application", package = "tRomics")
   )
 }
+
+# document datasets
+#' @title example_data
+#'
+#' @description A dataset containing the example data
+#'
+#' @name example_data
+#' @docType data
+#' @keywords data
+NULL

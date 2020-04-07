@@ -20,17 +20,30 @@ module_dataimport_server <- function(input,
     eventExpr = input_re()[["moduleDataimport-dataimport_example_data"]],
     handlerExpr = {
 
-      print("Importing")
+      # Create a Progress object
+      progress <- shiny::Progress$new()
+      # Make sure it closes when we exit this reactive, even if
+      # there's an error
+      on.exit(progress$close())
+      progress$set(
+        message = paste0("Loading example dataset."),
+        value = 0
+      )
 
-      rv$data <- example_data
+      progress$inc(
+        1 / 1,
+        detail = paste("... loading ...")
+      )
 
+      # load example data
+      rv$data <- tRomics::example_data
       rv$load_flag <- TRUE
+
+      progress$close()
     })
 
   observe({
     req(rv$data)
-
-    print(colnames(SummarizedExperiment::colData(rv$data)))
 
     if (is.null(rv$updated_choices)) {
       choices <- sapply(
@@ -48,17 +61,37 @@ module_dataimport_server <- function(input,
         choices = choices
       )
       rv$updated_choices <- TRUE
+      shinyjs::disable("dataimport_example_data")
     }
   })
 
   observeEvent(
     eventExpr = input_re()[["moduleDataimport-dataimport_start_analysis"]],
     handlerExpr = {
-      # TODO add progressbar for import etc.
-      rv$data_logtrans <- log_trans(rv$data)
 
-      print("Finished import")
+      shinyjs::disable("dataimport_start_analysis")
+      shinyjs::disable("dataimport_grouping_variable")
+
+      # Create a Progress object
+      progress <- shiny::Progress$new()
+      # Make sure it closes when we exit this reactive, even if
+      # there's an error
+      on.exit(progress$close())
+      progress$set(
+        message = paste0("Transforming data."),
+        value = 0
+      )
+
+      progress$inc(
+        1 / 1,
+        detail = paste("... transforming ...")
+      )
+
+      # transform data
+      rv$data_logtrans <- log_trans(data = rv$data)
       rv$import_finished <- TRUE
+
+      progress$close()
     }
   )
 
@@ -94,7 +127,8 @@ module_dataimport_ui <- function(id) {
           actionButton(
             inputId = ns("dataimport_example_data"),
             label = "Load example data"
-          )
+          ),
+          width = 12
         )
       ),
       column(
@@ -111,7 +145,8 @@ module_dataimport_ui <- function(id) {
           actionButton(
             inputId = ns("dataimport_start_analysis"),
             label = "Start analysis"
-          )
+          ),
+          width = 12
         )
       )
     )

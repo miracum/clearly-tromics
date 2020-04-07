@@ -8,16 +8,16 @@ my_desc <- desc::description$new("!new")
 my_desc$set("Package", packagename)
 # Set author names
 my_desc$set_authors(c(
-  person("Lorenz A.", "Kapsner", email = "lorenz.kapsner@uk-erlangen.de", role = c('cre', 'aut'),
+  person("Lorenz A.", "Kapsner", role = c('aut'),
          comment = c(ORCID = "0000-0003-1866-860X")),
-  person("Maximilian", "Fuchs", role = c('aut'))
+  person("Maximilian", "Fuchs", email = "maximilian.fuchs@fau.de", role = c('cre', 'aut'))
 ))
 # Remove some author fields
 my_desc$del("Maintainer")
 # Vignette Builder
 my_desc$set("VignetteBuilder" = "knitr")
 # Set the version
-my_desc$set_version("0.0.1.9001")
+my_desc$set_version("0.0.1.9003")
 # The title of your package
 my_desc$set(Title = "GUI for transcriptome profiling analysis")
 # The description of your package
@@ -54,6 +54,7 @@ usethis::use_gpl3_license(name="Universitätsklinikum Erlangen")
 ##      You can see the currently attached packages with search().
 
 # Depends
+usethis::use_package("R", min_version = "2.10", type = "Depends")
 
 # Imports (CRAN packages)
 usethis::use_package("shiny", type="Imports")
@@ -63,15 +64,16 @@ usethis::use_package("utils", type="Imports")
 usethis::use_package("DT", type="Imports")
 usethis::use_package("data.table", type="Imports")
 usethis::use_package("DESeq2", type="Imports")
-usethis::use_package("gdata", type="Imports")
+#usethis::use_package("gdata", type="Imports")
 usethis::use_package("gplots", type="Imports")
 usethis::use_package("ggplot2", type="Imports")
-usethis::use_package("dplyr", type="Imports")
+#usethis::use_package("dplyr", type="Imports")
 usethis::use_package("AnnotationDbi", type="Imports")
 usethis::use_package("pheatmap", type="Imports")
 usethis::use_package("EnhancedVolcano", type="Imports")
 usethis::use_package("matrixStats", type="Imports")
 usethis::use_package("SummarizedExperiment", type="Imports")
+usethis::use_package("BiocManager", type="Imports")
 
 # Suggests
 usethis::use_package("knitr", type="Suggests")
@@ -85,6 +87,8 @@ usethis::use_build_ignore(".gitlab-ci.yml")
 usethis::use_build_ignore("data-raw")
 usethis::use_build_ignore(".vscode")
 usethis::use_build_ignore("/plots/")
+usethis::use_build_ignore(".vscode")
+usethis::use_build_ignore(".lintr")
 
 # gitignore
 usethis::use_git_ignore("/*")
@@ -114,6 +118,7 @@ usethis::use_git_ignore("/.Rproj*")
 usethis::use_git_ignore("/.RData")
 usethis::use_git_ignore("/.vscode")
 usethis::use_git_ignore("/plots/")
+usethis::use_git_ignore("!/.lintr")
 
 # code coverage
 #covr::package_coverage()

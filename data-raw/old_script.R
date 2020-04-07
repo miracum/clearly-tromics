@@ -86,6 +86,10 @@ rv <- list()
 
 dds <- DESeq2::DESeq(dds)
 
+
+orgdb <- "org.Rn.eg.db"
+require(orgdb, character.only = TRUE)
+
 for (contr in seq_len(nrow(contrast_list))) {
 
   message(contr)
@@ -103,6 +107,22 @@ for (contr in seq_len(nrow(contrast_list))) {
     group_variable = grouping_variable,
     compare_group = compare_group,
     control_group = control_group
+  )
+
+  rv[[output_name]]$symbol <- deg_annotation(
+    keys = row.names(rv[[output_name]]),
+    orgdb = orgdb,
+    column = "SYMBOL"
+  )
+  rv[[output_name]]$entrez <- deg_annotation(
+    keys = row.names(rv[[output_name]]),
+    orgdb = orgdb,
+    column = "ENTREZID"
+  )
+
+  utils::write.csv(
+    x = rv[[output_name]],
+    file = paste0("./csv/", output_name, ".csv")
   )
 }
 
@@ -159,13 +179,6 @@ for (contr in seq_len(nrow(contrast_list))) {
 # C_Lycorine_vs_Bufalin$symbol <- tRomics::annotation(keys = C_Lycorine_vs_Bufalin)
 # C_Lycorine_vs_Bufalin$entrez <- tRomics::annotation(keys = C_Lycorine_vs_Bufalin)
 
-
-for (key in names(rv)) {
-  message(key)
-
-  rv[[key]]$symbol <- annotation(keys = row.names(rv[[key]]), column = "SYMBOL")
-  rv[[key]]$entrez <- annotation(keys = row.names(rv[[key]]), column = "ENTREZID")
-}
 
 #write.csv(A_Bufalin_vs_DMSO, 'A_Bufalin_vs_DMSO.csv')
 #write.csv(B_Lycorine_vs_DMSO, 'B_Lycorine_vs_DMSO.csv')
