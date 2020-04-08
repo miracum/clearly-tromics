@@ -1,6 +1,6 @@
 Package: tRomics
 Title: GUI for transcriptome profiling analysis
-Version: 0.0.1.9004
+Version: 0.0.1.9005
 Authors@R: 
     c(person(given = "Lorenz A.",
              family = "Kapsner",
@@ -43,4 +43,3 @@ Suggests:
     testthat,
     processx,
     lintr
-RoxygenNote: 7.1.0
