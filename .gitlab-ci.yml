@@ -10,7 +10,7 @@ variables:
   IMAGE_PATH: "r_package_ci"
   CI_IMAGE_NAME: "${DOCKER_REGISTRY}/${IMAGE_PATH}/${CI_PROJECT_NAME}_base_image"
   CI_IMAGE_TAG: "0.0.1"
-  R_PKG_NAME: "tRomics"
+  R_PKG_NAME: "tromics"
 
 .docker_registry:
   before_script:
