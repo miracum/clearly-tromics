@@ -248,6 +248,7 @@ module_deg_server <- function(input,
     }
   )
 
+  # render gui here
   observe({
     req(rv$finished_deg)
 
@@ -278,38 +279,48 @@ module_deg_server <- function(input,
         select = TRUE
       )
 
-      output[[paste0("tab_", output_name)]] <-
-        DT::renderDataTable({
-          DT::datatable(
-            data.frame(rv$deg$results[[output_name]]),
-            options = list(scrollX = TRUE,
-                           pageLength = 20,
-                           dom = "ltip"))
-        })
-
       rv$finished_deg_tabs <- TRUE
     }
   })
 
-#   observe({
-#     req(rv$finished_deg_tabs)
-#
-#     lapply(
-#       X = names(rv$deg$results),
-#       FUN = function(output_name) {
-#         output[[paste0("tab_dl", output_name)]] <-
-#           downloadHandler(
-#             filename = function() {
-#               paste0(output_name, ".csv")
-#             },
-#             content = function(file) {
-# # TODO: file.copy
-#             },
-#             contentType = "text/csv"
-#           )
-#       }
-#     )
-#   })
+  observe({
+    req(rv$finished_deg_tabs)
+
+    if (is.null(rv$finished_deg_outputs)) {
+
+      lapply(
+        X = names(rv$deg$results),
+        FUN = function(output_name) {
+
+          # fill table
+          output[[paste0("tab_", output_name)]] <-
+            DT::renderDataTable({
+              DT::datatable(
+                data.frame(rv$deg$results[[output_name]]),
+                options = list(scrollX = TRUE,
+                               pageLength = 20,
+                               dom = "ltip"))
+            })
+
+          # create dl button
+          output[[paste0("tab_dl_", output_name)]] <-
+            downloadHandler(
+              filename = function() {
+                paste0(output_name, ".csv")
+              },
+              content = function(file) {
+                file.copy(
+                  from = paste0(rv$csvdir, output_name, ".csv"),
+                  to = file
+                )
+              },
+              contentType = "text/csv"
+            )
+        }
+      )
+      rv$finished_deg_outputs <- TRUE
+    }
+  })
 }
 
 
