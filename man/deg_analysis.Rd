@@ -13,7 +13,7 @@ deg_analysis(data, group_variable, compare_group, control_group)
 
 \item{compare_group}{attribute group in comparison}
 
-\item{control}{group in comparison}
+\item{control_group}{group in comparison}
 }
 \description{
 Function for calculating DEGs and export of results

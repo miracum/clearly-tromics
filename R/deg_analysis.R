@@ -4,7 +4,7 @@
 #'
 #' @param group_variable Category of comparison
 #' @param compare_group attribute group in comparison
-#' @param control group in comparison
+#' @param control_group group in comparison
 #'
 #' @inheritParams log_trans
 #'

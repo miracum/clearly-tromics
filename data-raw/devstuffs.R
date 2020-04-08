@@ -17,7 +17,7 @@ my_desc$del("Maintainer")
 # Vignette Builder
 my_desc$set("VignetteBuilder" = "knitr")
 # Set the version
-my_desc$set_version("0.0.1.9003")
+my_desc$set_version("0.0.1.9004")
 # The title of your package
 my_desc$set(Title = "GUI for transcriptome profiling analysis")
 # The description of your package
@@ -66,6 +66,7 @@ usethis::use_package("data.table", type="Imports")
 usethis::use_package("DESeq2", type="Imports")
 #usethis::use_package("gdata", type="Imports")
 usethis::use_package("gplots", type="Imports")
+usethis::use_package("gtools", type="Imports")
 usethis::use_package("ggplot2", type="Imports")
 #usethis::use_package("dplyr", type="Imports")
 usethis::use_package("AnnotationDbi", type="Imports")
