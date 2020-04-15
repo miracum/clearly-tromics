@@ -11,10 +11,10 @@
 #'
 # module_visualization_server
 module_visualization_server <- function(input,
-                                     output,
-                                     session,
-                                     rv,
-                                     input_re) {
+                                        output,
+                                        session,
+                                        rv,
+                                        input_re) {
 
   observe({
     req(rv$data_logtrans)
@@ -58,7 +58,7 @@ module_visualization_server <- function(input,
 
     plot_heatmap(
       data = rv$data_logtrans,
-      filename = paste0(rv$plotdir, "DEG_heatmap.png"),
+      filename = paste0(rv$plotdir, "Heatmap.png"),
       ngenes = 1000
     )
 
@@ -121,7 +121,32 @@ module_visualization_server <- function(input,
     )
   })
 
+  observe({
+    output$viz_heatmap <- renderImage(
+      expr = {
+        filename <- paste0(
+          rv$plotdir,
+          "Heatmap.png"
+        )
+        # Return a list containing the filename
+        list(src = filename)
+      },
+      deleteFile = FALSE)
 
+    output$dl_viz_heatmap <- downloadHandler(
+      filename = function() {
+        "Heatmap.png"
+      },
+      content = function(file) {
+        file.copy(paste0(
+          rv$plotdir,
+          "Heatmap.png"
+        ),
+        file)
+      },
+      contentType = "image/png"
+    )
+  })
 }
 
 
@@ -136,56 +161,94 @@ module_visualization_ui <- function(id) {
   ns <- NS(id)
 
   tagList(# first row
-    box(
-      title = "PCA plot",
-      div(class = "row",
-          style = "text-align: center",
-          downloadButton(
-            outputId = ns("dl_viz_pca"),
-            label = "Download PCA plot",
-            style = paste0(
-              "white-space: normal; ",
-              "text-align:center; ",
-              "padding: 9.5px 9.5px 9.5px 9.5px; ",
-              "margin: 6px 10px 6px 10px;")
-          )
+    fluidRow(
+      column(
+        6,
+        box(
+          title = "PCA plot",
+          div(class = "row",
+              style = "text-align: center",
+              downloadButton(
+                outputId = ns("dl_viz_pca"),
+                label = "Download PCA plot",
+                style = paste0(
+                  "white-space: normal; ",
+                  "text-align:center; ",
+                  "padding: 9.5px 9.5px 9.5px 9.5px; ",
+                  "margin: 6px 10px 6px 10px;")
+              )
+          ),
+          imageOutput(
+            outputId = ns("viz_pca")
+          ),
+          tags$head(
+            tags$style(
+              type = "text/css",
+              paste0(
+                "#moduleVisualization-viz_pca img ",
+                "{max-height: 100%; max-width: 100%; width: auto; ",
+                "display: block; margin-left: auto; margin-right: auto;}"))
+          ),
+          width = 12
+        ),
+        box(
+          title = "Heatmap",
+          div(class = "row",
+              style = "text-align: center",
+              downloadButton(
+                outputId = ns("dl_viz_heatmap"),
+                label = "Download heatmap",
+                style = paste0(
+                  "white-space: normal; ",
+                  "text-align:center; ",
+                  "padding: 9.5px 9.5px 9.5px 9.5px; ",
+                  "margin: 6px 10px 6px 10px;")
+              )
+          ),
+          imageOutput(
+            outputId = ns("viz_heatmap")
+          ),
+          tags$head(
+            tags$style(
+              type = "text/css",
+              paste0(
+                "#moduleVisualization-viz_heatmap img ",
+                "{max-height: 100%; max-width: 100%; width: auto; ",
+                "display: block; margin-left: auto; margin-right: auto;}"))
+          ),
+          width = 12
+        )
       ),
-      imageOutput(
-        outputId = ns("viz_pca")
-      ),
-      tags$head(
-        tags$style(
-          type = "text/css",
-          paste0("#moduleVisualization-viz_pca img ",
-                 "{max-height: 100%; max-width: 100%; width: auto}"))
-      ),
-      width = 6
-    ),
-    box(
-      title = "MDS plot",
-      div(class = "row",
-          style = "text-align: center",
-          downloadButton(
-            outputId = ns("dl_viz_mds"),
-            label = "Download MDS plot",
-            style = paste0(
-              "white-space: normal; ",
-              "text-align:center; ",
-              "padding: 9.5px 9.5px 9.5px 9.5px; ",
-              "margin: 6px 10px 6px 10px;")
-          )
-      ),
-      imageOutput(
-        outputId = ns("viz_mds")
-      ),
-      tags$head(
-        tags$style(
-          type = "text/css",
-          paste0("#moduleVisualization-viz_mds img ",
-                 "{max-height: 100%; max-width: 100%; width: auto}"))
-      ),
-      width = 6
+      column(
+        6,
+        box(
+          title = "MDS plot",
+          div(class = "row",
+              style = "text-align: center",
+              downloadButton(
+                outputId = ns("dl_viz_mds"),
+                label = "Download MDS plot",
+                style = paste0(
+                  "white-space: normal; ",
+                  "text-align:center; ",
+                  "padding: 9.5px 9.5px 9.5px 9.5px; ",
+                  "margin: 6px 10px 6px 10px;")
+              )
+          ),
+          imageOutput(
+            outputId = ns("viz_mds")
+          ),
+          tags$head(
+            tags$style(
+              type = "text/css",
+              paste0(
+                "#moduleVisualization-viz_mds img ",
+                "{max-height: 100%; max-width: 100%; width: auto; ",
+                "display: block; margin-left: auto; margin-right: auto;}"))
+          ),
+          width = 12
+        )
+      )
     )
-
   )
 }

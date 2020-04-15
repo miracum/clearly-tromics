@@ -130,25 +130,35 @@ plot_heatmap <- function(data,
 #' @param results_object The resultsfile generated with deg_analysis function
 #' @param title A characte string. The plot title
 #'
-#'
+#' @inheritParams plot_pca
 #'
 #' @export
-plot_volcano  <- function(
-  results_object,
-  title) {
+plot_volcano  <- function(results_object,
+                          filename,
+                          title) {
 
-  EnhancedVolcano::EnhancedVolcano(as.data.frame(results_object),
-  title = title,
-  lab = as.character(row.names(results_object)),
-  selectLab = "",
-  subtitle = "",
-  x = "log2FoldChange",
-  y = "padj",
-  legend = c("not significant","Log (base 2) fold-change","FDR",
-           "FDR & Log (base 2) fold-change"),
-  pCutoff = 0.05,
-  FCcutoff = 1,
-  transcriptPointSize = 3.0,
-  colAlpha = 0.5,
-  ylab = bquote(~-Log[10]~FDR))
+  grDevices::png(
+    filename = filename,
+    res = 150,
+    height = 1000,
+    width = 1500
+  )
+  print({
+    EnhancedVolcano::EnhancedVolcano(
+      as.data.frame(results_object),
+      title = title,
+      lab = as.character(row.names(results_object)),
+      selectLab = "",
+      subtitle = "",
+      x = "log2FoldChange",
+      y = "padj",
+      legend = c("not significant","Log (base 2) fold-change","FDR",
+                 "FDR & Log (base 2) fold-change"),
+      pCutoff = 0.05,
+      FCcutoff = 1,
+      pointSize = 3.0,
+      colAlpha = 0.5,
+      ylab = bquote(~-Log[10]~FDR))
+  })
+  grDevices::dev.off()
 }

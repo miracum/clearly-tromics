@@ -94,33 +94,6 @@ module_deg_server <- function(input,
     }
   })
 
-  observe({
-    output$deg_heatmap <- renderImage(
-      expr = {
-        filename <- paste0(
-          rv$plotdir,
-          "DEG_heatmap.png"
-        )
-        # Return a list containing the filename
-        list(src = filename)
-      },
-      deleteFile = FALSE)
-
-    output$dl_deg_heatmap <- downloadHandler(
-      filename = function() {
-        "DEG_heatmap.png"
-      },
-      content = function(file) {
-        file.copy(paste0(
-          rv$plotdir,
-          "DEG_heatmap.png"
-        ),
-        file)
-      },
-      contentType = "image/png"
-    )
-  })
-
   observeEvent(
     eventExpr = input_re()[["moduleDEG-deg_start"]],
     handlerExpr = {
@@ -184,7 +157,7 @@ module_deg_server <- function(input,
           )
 
           progress1$inc(
-            1 / 3,
+            1 / 4,
             detail = paste("... deg_analysis ...")
           )
           rv$deg$results[[output_name]] <- deg_analysis(
@@ -195,7 +168,7 @@ module_deg_server <- function(input,
           )
 
           progress1$inc(
-            1 / 3,
+            1 / 4,
             detail = paste("... annotation ...")
           )
           orgdb <- input_re()[["moduleDEG-deg_orgdb"]]
@@ -226,12 +199,24 @@ module_deg_server <- function(input,
             )
 
           progress1$inc(
-            1 / 3,
+            1 / 4,
             detail = paste("... CSV export ...")
           )
           utils::write.csv(
             x = rv$deg$results[[output_name]],
             file = paste0(rv$csvdir, output_name, ".csv")
+          )
+
+          progress1$inc(
+            1 / 4,
+            detail = paste("... volcano plot ...")
+          )
+          plot_volcano(
+            results_object = rv$deg$results[[output_name]],
+            filename = paste0(rv$plotdir,
+                              "Volcano_", output_name, ".png"
+            ),
+            title = output_name
           )
           progress1$close()
         }
@@ -321,6 +306,33 @@ module_deg_server <- function(input,
       rv$finished_deg_outputs <- TRUE
     }
   })
+
+  observe({
+    output$deg_volcano <- renderImage(
+      expr = {
+        filename <- paste0(
+          rv$plotdir,
+          paste0("Volcano_", input$deg_result_tabs, ".png")
+        )
+        # Return a list containing the filename
+        list(src = filename)
+      },
+      deleteFile = FALSE)
+
+    output$dl_deg_volcano <- downloadHandler(
+      filename = function() {
+        paste0("Volcano_", input$deg_result_tabs, ".png")
+      },
+      content = function(file) {
+        file.copy(paste0(
+          rv$plotdir,
+          paste0("Volcano_", input$deg_result_tabs, ".png")
+        ),
+        file)
+      },
+      contentType = "image/png"
+    )
+  })
 }
 
 
@@ -343,8 +355,8 @@ module_deg_ui <- function(id) {
           div(class = "row",
               style = "text-align: center",
               downloadButton(
-                outputId = ns("dl_deg_heatmap"),
-                label = "Download heatmap",
+                outputId = ns("dl_deg_volcano"),
+                label = "Download Volcano plot",
                 style = paste0(
                   "white-space: normal; ",
                   "text-align:center; ",
@@ -353,13 +365,16 @@ module_deg_ui <- function(id) {
               )
           ),
           imageOutput(
-            outputId = ns("deg_heatmap")
+            outputId = ns("deg_volcano")
           ),
           tags$head(
             tags$style(
               type = "text/css",
-              paste0("#moduleDEG-deg_heatmap img ",
-                     "{max-height: 100%; max-width: 100%; width: auto}"))),
+              paste0(
+                "#moduleDEG-deg_volcano img ",
+                "{max-height: 100%; max-width: 100%; width: auto; ",
+                "display: block; margin-left: auto; margin-right: auto;}"))
+          ),
           width = 12
         )
       ),
@@ -372,14 +387,16 @@ module_deg_ui <- function(id) {
         ),
         box(
           title = "Options",
-          numericInput(
-            inputId = ns("deg_fdr"),
-            label = "False discovery rate (default: 0.05)",
-            value = 0.05,
-            min = 0,
-            max = 1,
-            step = 0.001
-          ),
+          # nolint start
+          # numericInput(
+          #   inputId = ns("deg_fdr"),
+          #   label = "False discovery rate (default: 0.05)",
+          #   value = 0.05,
+          #   min = 0,
+          #   max = 1,
+          #   step = 0.001
+          # ),
+          # nolint end
           textInput(
             inputId = ns("deg_orgdb"),
             label = "OrgDB",

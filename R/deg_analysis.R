@@ -7,8 +7,6 @@
 #' @param compare_group attribute group in comparison
 #' @param control_group group in comparison
 #'
-#' @inheritParams log_trans
-#'
 #' @export
 
 deg_analysis <- function(

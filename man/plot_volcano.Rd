@@ -4,10 +4,12 @@
 \alias{plot_volcano}
 \title{plot_volcano}
 \usage{
-plot_volcano(results_object, title)
+plot_volcano(results_object, filename, title)
 }
 \arguments{
 \item{results_object}{The resultsfile generated with deg_analysis function}
+
+\item{filename}{A character string. The filename.}
 
 \item{title}{A characte string. The plot title}
 }
