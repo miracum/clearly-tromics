@@ -158,7 +158,8 @@ plot_volcano  <- function(results_object,
       FCcutoff = 1,
       pointSize = 3.0,
       colAlpha = 0.5,
-      ylab = bquote(~-Log[10]~FDR))
+      ylab = bquote(~-Log[10]~FDR)
+    )
   })
   grDevices::dev.off()
 }
