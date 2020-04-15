@@ -16,6 +16,6 @@ deg_annotation(keys, orgdb, column, keytype = "ENSEMBL")
 \item{keytype}{Type of existing annotation}
 }
 \description{
-Function to add common annotations from
-  several common databases
+Function to add gene annotations from
+             several common databases
 }

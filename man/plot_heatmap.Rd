@@ -12,5 +12,5 @@ plot_heatmap(data, filename, ngenes = 1000)
 \item{filename}{A character string. The filename.}
 }
 \description{
-Function to create multi-dimensional scaling plot
+Function to create heatmap of top-ranked genes (by variance)
 }

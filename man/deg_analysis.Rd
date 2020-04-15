@@ -7,7 +7,7 @@
 deg_analysis(data, group_variable, compare_group, control_group)
 }
 \arguments{
-\item{data}{TODO doku}
+\item{data}{DESeq2 object}
 
 \item{group_variable}{Category of comparison}
 
@@ -16,5 +16,5 @@ deg_analysis(data, group_variable, compare_group, control_group)
 \item{control_group}{group in comparison}
 }
 \description{
-Function for calculating DEGs and export of results
+Wrapper function for calculating DEGs and export of results
 }

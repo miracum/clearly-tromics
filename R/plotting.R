@@ -75,7 +75,9 @@ plot_mds <- function(data,
 
 #' @title plot_heatmap
 #'
-#' @description Function to create multi-dimensional scaling plot
+#' @description Function to create heatmap of top-ranked genes (by variance)
+#'
+#' @param ngenes Number of top variance genes to be included in the heatmap
 #'
 #' @inheritParams plot_pca
 #'
@@ -125,30 +127,28 @@ plot_heatmap <- function(data,
 #' @description Function for plotting the results of differential
 #'   expression analysis as volcano plot
 #'
-#' @param results The resultsfile.
+#' @param results_object The resultsfile generated with deg_analysis function
 #' @param title A characte string. The plot title
 #'
-#' @export
 #'
-# plot_volcano  <- function(
-#   results,
-#   title,
-#   FDR
-# ) {
-#
-#
-#   EnhancedVolcano::EnhancedVolcano(as.data.frame(results)),
-#   title = title,
-#   lab = as.character(row.names(results)),
-#   selectLab = '',
-#   subtitle = '',
-#   x = 'log2FoldChange',
-#   y = 'padj',
-#   legend=c('not significant','Log (base 2) fold-change','FDR',
-#            'FDR & Log (base 2) fold-change'),
-#   pCutoff = 0.05,
-#   FCcutoff = 1,
-#   transcriptPointSize = 3.0,
-#   colAlpha = 0.5,
-#   ylab = bquote(~-Log[10]~FDR) # TODO export package?
-# }
+#'
+#' @export
+plot_volcano  <- function(
+  results_object,
+  title) {
+
+  EnhancedVolcano::EnhancedVolcano(as.data.frame(results_object),
+  title = title,
+  lab = as.character(row.names(results_object)),
+  selectLab = "",
+  subtitle = "",
+  x = "log2FoldChange",
+  y = "padj",
+  legend = c("not significant","Log (base 2) fold-change","FDR",
+           "FDR & Log (base 2) fold-change"),
+  pCutoff = 0.05,
+  FCcutoff = 1,
+  transcriptPointSize = 3.0,
+  colAlpha = 0.5,
+  ylab = bquote(~-Log[10]~FDR)) # TODO export package?
+}

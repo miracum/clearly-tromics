@@ -1,7 +1,7 @@
 #' @title deg_annotation
 #'
-#' @description Function to add common annotations from
-#'   several common databases
+#' @description Function to add gene annotations from
+#'              several common databases
 #'
 #' @param keys existing annotation
 #' @param orgdb A annotation package

@@ -55,7 +55,7 @@ grouping_variable <- "treatment"
 #   ggplot2::ylab(paste0('PC2: ', percentVar[2], '% variance')) +
 #   ggplot2::coord_fixed()
 plot_pca(
-  rld = rld,
+  data = rld,
   filename = "plots/PCA_plot.png",
   color_var = grouping_variable
 )
@@ -71,7 +71,7 @@ plot_pca(
 #   ggplot2::geom_point(size = 3) +
 #   ggplot2::coord_fixed()
 plot_mds(
-  rld = rld,
+  data = rld,
   filename = "plots/MDS_plot.png",
   color_var = grouping_variable
 )
@@ -193,7 +193,7 @@ for (contr in seq_len(nrow(contrast_list))) {
 # annotation_data <- as.data.frame(colData(rld))
 # pheatmap(matrix, scale = 'row',show_rownames = F, color = bluered(100), fontsize = 8, annotation_col = coldata, cluster_cols = F)
 plot_heatmap(
-  rld = rld,
+  data = rld,
   filename = "plots/heatmap.png",
   ngenes = 1000
 )
@@ -240,6 +240,9 @@ plot_heatmap(
 #                 xlim = c(-10,10),
 #                 ylim = c(0,100),
 #                 ylab = bquote(~-Log[10]~FDR))
+
+plot_volcano  <- (results_object = results_object,
+  title = "Volcano Plot")
 
 tRomics::plotVolcano(results = rv[["treatment_lycorine_dmso"]], title = 'Lycorine vs DMSO')
 tRomics::plotVolcano(results = C_Lycorine_vs_Bufalin, title = 'LYcorine vs Bufalin')
