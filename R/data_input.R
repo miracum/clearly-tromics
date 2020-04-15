@@ -4,7 +4,7 @@
 #'
 #' @param counttable Filename or path to .csv-file containing raw read counts
 #' @param metadata Filename or path to .csv-file containing sample descriptions
-#' @param design Design formula for linear model (as a character string).
+#' @param design Design formula (as a character string).
 #' @export
 
 data_input <- function(
@@ -28,7 +28,7 @@ data_input <- function(
 #'
 #' @description Wrapper function for log-transformation of counts
 #'
-#' @param data TODO doku
+#' @param data DESeq2 object
 #'
 #' @export
 log_trans <- function(data) {

@@ -1,7 +1,8 @@
 #' @title deg_analysis
 #'
-#' @description Function for calculating DEGs and export of results
+#' @description Wrapper function for calculating DEGs and export of results
 #'
+#' @param data DESeq2 object
 #' @param group_variable Category of comparison
 #' @param compare_group attribute group in comparison
 #' @param control_group group in comparison

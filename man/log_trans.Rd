@@ -7,7 +7,7 @@
 log_trans(data)
 }
 \arguments{
-\item{data}{TODO doku}
+\item{data}{DESeq2 object}
 }
 \description{
 Wrapper function for log-transformation of counts

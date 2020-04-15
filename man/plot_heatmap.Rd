@@ -10,7 +10,9 @@ plot_heatmap(data, filename, ngenes = 1000)
 \item{data}{Object containing log-transformed counts}
 
 \item{filename}{A character string. The filename.}
+
+\item{ngenes}{Number of top variance genes to be included in the heatmap}
 }
 \description{
-Function to create multi-dimensional scaling plot
+Function to create heatmap of top-ranked genes (by variance)
 }

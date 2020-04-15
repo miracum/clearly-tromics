@@ -11,7 +11,7 @@ data_input(counttable, metadata, design)
 
 \item{metadata}{Filename or path to .csv-file containing sample descriptions}
 
-\item{design}{Design formula for linear model (as a character string).}
+\item{design}{Design formula (as a character string).}
 }
 \description{
 Function for data input and pre-filtering
