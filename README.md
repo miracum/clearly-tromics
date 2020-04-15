@@ -20,10 +20,18 @@ devtools::install_git("https://gitlab.miracum.org/clearly/tromics.git")
 
 To start `tRomics`, just run the following command in R. A browser tab should open displaying the web application. Alternatively you can type the URL "localhost:3838/" in your browser.
 
+To run the analyses, please click on the button *Load example data* on the application's dashboard.
+
 ```r
 library(tRomics)
 launch_app()
 ```
+
+# Example files
+
+Example files are available: 
+* Count data: [count_data.csv](inst/example_data/count_data.csv)
+* Meta data: [metadata.csv](inst/example_data/metadata.csv)
 
 # More Infos
 
