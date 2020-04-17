@@ -33,6 +33,19 @@ Example files are available:
 * Count data: [count_data.csv](inst/example_data/count_data.csv)
 * Meta data: [metadata.csv](inst/example_data/metadata.csv)
 
+# Exprected input file structure
+* The app works based on two input files (Compare example files???):
+- Countdata: A comma-separated text file that contains raw read counts. Each line represents a gene and the row names have to be Ensembl-IDs. Each column represents one sample. 
+- Metadata: A comma-separated text file that contains information about the samples. Each row contains the info for one sample and the rownames have to match the column names from the countdata file. The columns can contain several information about the samples (e.g. treatment, donor, group ...).
+
+# File upload
+
+# Visualization
+
+# DEG analysis
+
+
+
 # More Infos
 
 - about MIRACUM: [https://www.miracum.org/](https://www.miracum.org/)
