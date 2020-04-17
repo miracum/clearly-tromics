@@ -264,6 +264,13 @@ module_deg_server <- function(input,
         select = TRUE
       )
 
+      # workaround to tell ui, that analysis is performed
+      output$finished_deg_tabs <- reactive({
+        return(TRUE)
+      })
+      outputOptions(output, "finished_deg_tabs",
+                    suspendWhenHidden = FALSE)
+
       rv$finished_deg_tabs <- TRUE
     }
   })
@@ -352,28 +359,31 @@ module_deg_ui <- function(id) {
         9,
         box(
           title = "DEG analysis",
-          div(class = "row",
-              style = "text-align: center",
-              downloadButton(
-                outputId = ns("dl_deg_volcano"),
-                label = "Download Volcano plot",
-                style = paste0(
-                  "white-space: normal; ",
-                  "text-align:center; ",
-                  "padding: 9.5px 9.5px 9.5px 9.5px; ",
-                  "margin: 6px 10px 6px 10px;")
-              )
-          ),
-          imageOutput(
-            outputId = ns("deg_volcano")
-          ),
-          tags$head(
-            tags$style(
-              type = "text/css",
-              paste0(
-                "#moduleDEG-deg_volcano img ",
-                "{max-height: 100%; max-width: 100%; width: auto; ",
-                "display: block; margin-left: auto; margin-right: auto;}"))
+          conditionalPanel(
+            condition = "output['moduleDEG-finished_deg_tabs']",
+            div(class = "row",
+                style = "text-align: center",
+                downloadButton(
+                  outputId = ns("dl_deg_volcano"),
+                  label = "Download Volcano plot",
+                  style = paste0(
+                    "white-space: normal; ",
+                    "text-align:center; ",
+                    "padding: 9.5px 9.5px 9.5px 9.5px; ",
+                    "margin: 6px 10px 6px 10px;")
+                )
+            ),
+            imageOutput(
+              outputId = ns("deg_volcano")
+            ),
+            tags$head(
+              tags$style(
+                type = "text/css",
+                paste0(
+                  "#moduleDEG-deg_volcano img ",
+                  "{max-height: 100%; max-width: 100%; width: auto; ",
+                  "display: block; margin-left: auto; margin-right: auto;}"))
+            )
           ),
           width = 12
         )
@@ -412,9 +422,12 @@ module_deg_ui <- function(id) {
       )
     ),
     fluidRow(
-      box(
-        tabsetPanel(id = ns("deg_result_tabs")),
-        width = 12
+      conditionalPanel(
+        condition = "output['moduleDEG-finished_deg_tabs']",
+        box(
+          tabsetPanel(id = ns("deg_result_tabs")),
+          width = 12
+        )
       )
     )
   )

@@ -13,8 +13,8 @@ data_input <- function(
     design) {
 
     dds <- DESeq2::DESeqDataSetFromMatrix(
-        countData = as.matrix(utils::read.csv(counttable, row.names = 1)),
-        colData = utils::read.csv(metadata, row.names = 1),
+        countData = as.matrix(counttable),
+        colData = metadata,
         design = stats::as.formula(design)
     )
 

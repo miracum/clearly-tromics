@@ -39,11 +39,20 @@ launch_app <- function(port=3838,
 }
 
 # document datasets
-#' @title example_data
+#' @title countdata
 #'
-#' @description A dataset containing the example data
+#' @description A dataset containing the example count data
 #'
-#' @name example_data
+#' @name countdata
+#' @docType data
+#' @keywords data
+NULL
+
+#' @title metadata
+#'
+#' @description A dataset containing the example meta data
+#'
+#' @name metadata
 #' @docType data
 #' @keywords data
 NULL
