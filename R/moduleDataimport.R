@@ -431,6 +431,8 @@ module_dataimport_ui <- function(id) {
               conditionalPanel(
                 condition = "output['moduleDataimport-preprocess_present']",
                 tags$hr(),
+                # https://shiny.rstudio.com/reference/shiny/0.11/helpText.html
+                helpText("Helptext would go here"),
                 actionButton(
                   inputId = ns("dataimport_start_analysis"),
                   label = "Start analysis"
