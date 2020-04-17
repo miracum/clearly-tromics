@@ -102,8 +102,8 @@ module_dataimport_server <- function(input,
 
       if (!is.null(rv$data_countdata) && !is.null(rv$data_metadata)) {
 
-        if (isFALSE(identical(sort(colnames(countdata)),
-                              sort(rownames(metadata))))) {
+        if (isFALSE(identical(sort(colnames(rv$data_countdata)),
+                              sort(rownames(rv$data_metadata))))) {
           showModal(modalDialog(
             "Metadata row names not matching count data row names",
             title = "Error",
