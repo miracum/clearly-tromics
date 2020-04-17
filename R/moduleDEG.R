@@ -123,7 +123,11 @@ module_deg_server <- function(input,
         )
 
         # extract necessary comparisons
-        comparisons <- rv$deg$contrast_list[selected_rows, ]
+        comparisons <- matrix(
+          rv$deg$contrast_list[selected_rows, ],
+          ncol = 2
+        )
+        colnames(comparisons) <- colnames(rv$deg$contrast_list)
 
         for (contr in seq_len(nrow(comparisons))) {
 

@@ -380,6 +380,22 @@ module_dataimport_ui <- function(id) {
             label = "Load example data"
           ),
           width = 12
+        ),
+        conditionalPanel(
+          condition = "output['moduleDataimport-tables']",
+          box(
+            tabsetPanel(
+              tabPanel(
+                title = "Metadata",
+                DT::dataTableOutput(ns("dataimport_metadata"))
+              ),
+              tabPanel(
+                title = "Count data",
+                DT::dataTableOutput(ns("dataimport_countdata"))
+              )
+            ),
+            width = 12
+          )
         )
       ),
       column(
@@ -397,7 +413,7 @@ module_dataimport_ui <- function(id) {
             tags$hr(),
             textInput(
               inputId = ns("dataimport_design"),
-              label = "Please fill in the design formula prefix"
+              label = "Please specify the design formula"
             ),
             actionButton(
               inputId = ns("dataimport_confirm_design"),
@@ -420,24 +436,6 @@ module_dataimport_ui <- function(id) {
                   label = "Start analysis"
                 )
               )
-            )
-          ),
-          width = 12
-        )
-      )
-    ),
-    fluidRow(
-      conditionalPanel(
-        condition = "output['moduleDataimport-tables']",
-        box(
-          tabsetPanel(
-            tabPanel(
-              title = "Metadata",
-              DT::dataTableOutput(ns("dataimport_metadata"))
-            ),
-            tabPanel(
-              title = "Count data",
-              DT::dataTableOutput(ns("dataimport_countdata"))
             )
           ),
           width = 12
