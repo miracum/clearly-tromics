@@ -71,7 +71,7 @@ module_dataimport_server <- function(input,
           DT::datatable(rv$data_countdata,
                         options = list(scrollX = TRUE,
                                        pageLength = 20,
-                                       dom = "ltip")
+                                       dom = "ltips")
           )
         })
 
@@ -79,7 +79,7 @@ module_dataimport_server <- function(input,
           DT::datatable(rv$data_metadata,
                         options = list(scrollX = TRUE,
                                        pageLength = 20,
-                                       dom = "ltip")
+                                       dom = "ltips")
           )
         })
 
@@ -99,31 +99,88 @@ module_dataimport_server <- function(input,
   observeEvent(
     eventExpr = input_re()[["moduleDataimport-dataimport_preprocess"]],
     handlerExpr = {
+
       if (!is.null(rv$data_countdata) && !is.null(rv$data_metadata)) {
-        shinyjs::disable("import_metadata")
-        shinyjs::disable("import_countdata")
 
-        # Create a Progress object
-        progress <- shiny::Progress$new()
-        # Make sure it closes when we exit this reactive, even if
-        # there's an error
-        on.exit(progress$close())
-        progress$set(
-          message = paste0("Create DESeqDataSet"),
-          value = 0
-        )
+        if (isFALSE(identical(sort(colnames(countdata)),
+                              sort(rownames(metadata))))) {
+          showModal(modalDialog(
+            "Metadata row names not matching count data row names",
+            title = "Error",
+            footer = modalButton("OK")
+          ))
+        } else {
 
-        progress$inc(
-          1 / 1,
-          detail = paste("... creating dataset ...")
-        )
 
-        rv$data <- data_input(
-          counttable = rv$data_countdata,
-          metadata = rv$data_metadata,
-          design = "~ 0 + treatment"
-        )
+          sort_vec <- sapply(rownames(rv$data_metadata),
+                             FUN = function(x) {
+                               which(x == colnames(rv$data_countdata))
+                             })
 
+          rv$data_countdata <- rv$data_countdata[, unname(sort_vec)]
+
+
+          shinyjs::disable("import_metadata")
+          shinyjs::disable("import_countdata")
+
+          # Create a Progress object
+          progress <- shiny::Progress$new()
+          # Make sure it closes when we exit this reactive, even if
+          # there's an error
+          on.exit(progress$close())
+          progress$set(
+            message = paste0("Create DESeqDataSet"),
+            value = 0
+          )
+
+          progress$inc(
+            1 / 1,
+            detail = paste("... creating dataset ...")
+          )
+
+          rv$data <- tryCatch(
+            expr = {
+              ret <- data_input(
+                counttable = rv$data_countdata,
+                metadata = rv$data_metadata,
+                design = rv$design
+              )
+              ret
+            }, warning = function(w) {
+              showModal(modalDialog(
+                w,
+                title = "Error",
+                footer = modalButton("OK")
+              ))
+              ret <- NULL
+            }, error = function(e) {
+              showModal(modalDialog(
+                e,
+                title = "Error",
+                footer = modalButton("OK")
+              ))
+              ret <- NULL
+            }, finally = function(f) {
+              return(ret)
+            }
+          )
+
+          progress$close()
+
+          if (is.null(rv$data)) {
+            shinyjs::click("reset")
+          } else {
+            # workaround to tell ui, that analysis is performed
+            output$preprocess_present <- reactive({
+              return(TRUE)
+            })
+            outputOptions(output, "preprocess_present",
+                          suspendWhenHidden = FALSE)
+
+            rv$load_flag <- TRUE
+            shinyjs::disable("dataimport_preprocess")
+          }
+        }
       }
     })
 
@@ -173,34 +230,40 @@ module_dataimport_server <- function(input,
       )
       rv$updated_choices <- TRUE
       shinyjs::disable("dataimport_example_data")
-      shinyjs::disable("import_metadata")
-      shinyjs::disable("import_countdata")
     }
   })
 
   observeEvent(
-    eventExpr = input_re()[["moduleDataimport-dataimport_preprocess"]],
+    eventExpr = input_re()[["moduleDataimport-dataimport_confirm_design"]],
     handlerExpr = {
-
       # check for valid formula
       if (grepl(
         pattern = "~",
         x = input_re()[["moduleDataimport-dataimport_design"]],
       )) {
-        rv$data <- data_input(
-          counttable = rv$data_countdata,
-          metadata = rv$data_metadata,
-          design = paste0(
-            rv$design_prefix,
-            rv$grouping_variable
-          )
+
+        rv$design <- paste(
+          input_re()[["moduleDataimport-dataimport_design"]]
         )
-        rv$load_flag <- TRUE
-        shinyjs::disable("dataimport_preprocess")
+        message(rv$design)
+
+        shinyjs::disable("dataimport_confirm_design")
+
+        output$dataimport_design_formula <- renderText({
+          rv$design
+        })
+
+        # workaround to tell ui, that analysis is performed
+        output$design_present <- reactive({
+          return(TRUE)
+        })
+        outputOptions(output, "design_present",
+                      suspendWhenHidden = FALSE)
+
       } else {
         showModal(modalDialog(
           paste(
-            "Please provide a valid design formula prefix"
+            "Please provide a valid design formula"
           ),
           title = "Error",
           footer = modalButton("OK")
@@ -236,6 +299,8 @@ module_dataimport_server <- function(input,
         rv$data_logtrans <- log_trans(data = rv$data)
         rv$import_finished <- TRUE
 
+        shinyjs::disable("dataimport_grouping_variable")
+
         progress$close()
       } else {
         showModal(modalDialog(
@@ -256,6 +321,18 @@ module_dataimport_server <- function(input,
       message(paste0("Grouping variable: ", rv$grouping_variable))
     }
   )
+
+  observe({
+    req(rv$grouping_variable)
+    updateTextInput(
+      session = session,
+      inputId = "dataimport_design",
+      value = paste(
+        "~ 0 +",
+        rv$grouping_variable
+      )
+    )
+  })
 
 
 }
@@ -318,19 +395,29 @@ module_dataimport_ui <- function(id) {
             tags$hr(),
             textInput(
               inputId = ns("dataimport_design"),
-              label = "Please fill in the design formula prefix",
-              value = "0 ~ "
+              label = "Please fill in the design formula prefix"
             ),
-            tags$hr(),
             actionButton(
-              inputId = ns("dataimport_preprocess"),
-              label = "Preprocess data"
+              inputId = ns("dataimport_confirm_design"),
+              label = "Confirm design formula"
             ),
-
-            tags$hr(),
-            actionButton(
-              inputId = ns("dataimport_start_analysis"),
-              label = "Start analysis"
+            conditionalPanel(
+              condition = "output['moduleDataimport-design_present']",
+              tags$hr(),
+              verbatimTextOutput(ns("dataimport_design_formula")),
+              tags$hr(),
+              actionButton(
+                inputId = ns("dataimport_preprocess"),
+                label = "Preprocess data"
+              ),
+              conditionalPanel(
+                condition = "output['moduleDataimport-preprocess_present']",
+                tags$hr(),
+                actionButton(
+                  inputId = ns("dataimport_start_analysis"),
+                  label = "Start analysis"
+                )
+              )
             )
           ),
           width = 12

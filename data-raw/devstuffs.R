@@ -135,12 +135,13 @@ design <- "~ 0 + treatment"
 
 countdata <- utils::read.csv(counttable, header = T, row.names = 1)
 metadata <- utils::read.csv(metadata, header = T, row.names = 1)
+design <- "~ 0 + treatment"
 
-# example_data <- tRomics::data_input(
-#   counttable = counttable,
-#   metadata = metadata,
-#   design = design
-# )
+example_data <- tRomics::data_input(
+  counttable = countdata,
+  metadata = metadata,
+  design = design
+)
 
 usethis::use_data(countdata, internal = F, overwrite = T)
 usethis::use_data(metadata, internal = F, overwrite = T)
