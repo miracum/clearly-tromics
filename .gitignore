@@ -29,3 +29,7 @@
 /plots/
 !/data/
 !/.lintr
+!/inst/example_data/count_data.csv
+!/inst/example_data/metadata.csv
+!/data/countdata.rda
+!/data/metadata.rda

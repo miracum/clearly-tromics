@@ -153,6 +153,7 @@ module_dataimport_server <- function(input,
                 footer = modalButton("OK")
               ))
               ret <- NULL
+              ret
             }, error = function(e) {
               showModal(modalDialog(
                 e,
@@ -160,6 +161,7 @@ module_dataimport_server <- function(input,
                 footer = modalButton("OK")
               ))
               ret <- NULL
+              ret
             }, finally = function(f) {
               return(ret)
             }
