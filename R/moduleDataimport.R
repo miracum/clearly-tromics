@@ -134,7 +134,7 @@ module_dataimport_server <- function(input,
           )
 
           progress$inc(
-            1 / 1,
+            1 / 2,
             detail = paste("... creating dataset ...")
           )
 
@@ -201,7 +201,7 @@ module_dataimport_server <- function(input,
       )
 
       progress$inc(
-        1 / 1,
+        1 / 2,
         detail = paste("... loading ...")
       )
 
@@ -293,7 +293,7 @@ module_dataimport_server <- function(input,
         )
 
         progress$inc(
-          1 / 1,
+          1 / 2,
           detail = paste("... transforming ...")
         )
 
