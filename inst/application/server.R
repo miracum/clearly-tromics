@@ -3,8 +3,16 @@ shiny::shinyServer(function(input, output, session) {
     rv <- shiny::reactiveValues(
         csvdir = paste0(dir, "/csv/"),
         plotdir = paste0(dir, "/plots/"),
-        datadir = paste0(dir, "/datadir/")
+        datadir = paste0(dir, "/datadir/"),
+        deg = list()
     )
+
+    observe({
+        if (is.null(rv$deg$results)) {
+            # init results list here
+            rv$deg$results <- list()
+        }
+    })
 
     # handle reset
     shiny::observeEvent(input$reset, {

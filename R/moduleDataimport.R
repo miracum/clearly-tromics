@@ -71,7 +71,7 @@ module_dataimport_server <- function(input,
           DT::datatable(rv$data_countdata,
                         options = list(scrollX = TRUE,
                                        pageLength = 20,
-                                       dom = "ltips")
+                                       dom = "fltip")
           )
         })
 
@@ -79,7 +79,7 @@ module_dataimport_server <- function(input,
           DT::datatable(rv$data_metadata,
                         options = list(scrollX = TRUE,
                                        pageLength = 20,
-                                       dom = "ltips")
+                                       dom = "fltip")
           )
         })
 

@@ -104,9 +104,10 @@ module_deg_server <- function(input,
 
       if (length(selected_rows) > 0) {
 
-        shinyjs::disable("deg_orgdb")
+        rv$finished_deg <- NULL
+        rv$finished_deg_outputs <- NULL
 
-        rv$deg$results <- list()
+        shinyjs::disable("deg_orgdb")
 
         # Create a Progress object
         progress <- shiny::Progress$new()
@@ -146,79 +147,82 @@ module_deg_server <- function(input,
                   sep = "_")
           )
 
-          # Create a Progress object
-          progress1 <- shiny::Progress$new()
-          # Make sure it closes when we exit this reactive, even if
-          # there's an error
-          on.exit(progress1$close())
-          progress1$set(
-            message = paste0("DEG analysis"),
-            value = 0
-          )
+          if (!(output_name %in% names(rv$deg$results))) {
 
-          progress1$inc(
-            1 / 4,
-            detail = paste("... deg_analysis ...")
-          )
-          rv$deg$results[[output_name]] <- deg_analysis(
-            data = rv$data_deseq,
-            group_variable = rv$grouping_variable,
-            compare_group = compare_group,
-            control_group = control_group
-          )
+            # Create a Progress object
+            progress1 <- shiny::Progress$new()
+            # Make sure it closes when we exit this reactive, even if
+            # there's an error
+            on.exit(progress1$close())
+            progress1$set(
+              message = paste0("DEG analysis"),
+              value = 0
+            )
 
-          progress1$inc(
-            1 / 4,
-            detail = paste("... annotation ...")
-          )
-          orgdb <- input_re()[["moduleDEG-deg_orgdb"]]
+            progress1$inc(
+              1 / 4,
+              detail = paste("... deg_analysis ...")
+            )
+            rv$deg$results[[output_name]] <- deg_analysis(
+              data = rv$data_deseq,
+              group_variable = rv$grouping_variable,
+              compare_group = compare_group,
+              control_group = control_group
+            )
 
-          if (!(orgdb %in% utils::installed.packages()[, "Package"])) {
-            withProgress({
-              BiocManager::install(
-                pkgs = orgdb,
-                update = F
+            progress1$inc(
+              1 / 4,
+              detail = paste("... annotation ...")
+            )
+            orgdb <- input_re()[["moduleDEG-deg_orgdb"]]
+
+            if (!(orgdb %in% utils::installed.packages()[, "Package"])) {
+              withProgress({
+                BiocManager::install(
+                  pkgs = orgdb,
+                  update = F
+                )
+              },
+              value = 0.5,
+              message = paste0("Downloading ", orgdb)
               )
-            },
-            value = 0.5,
-            message = paste0("Downloading ", orgdb)
+            }
+
+            rv$deg$results[[output_name]]$symbol <-
+              deg_annotation(
+                keys = row.names(rv$deg$results[[output_name]]),
+                orgdb = orgdb,
+                column = "SYMBOL"
+              )
+            rv$deg$results[[output_name]]$entrez <-
+              deg_annotation(
+                keys = row.names(rv$deg$results[[output_name]]),
+                orgdb = orgdb,
+                column = "ENTREZID"
+              )
+
+            progress1$inc(
+              1 / 4,
+              detail = paste("... CSV export ...")
             )
+            utils::write.csv(
+              x = rv$deg$results[[output_name]],
+              file = paste0(rv$csvdir, output_name, ".csv")
+            )
+
+            progress1$inc(
+              1 / 4,
+              detail = paste("... volcano plot ...")
+            )
+            plot_volcano(
+              results_object = rv$deg$results[[output_name]],
+              filename = paste0(rv$plotdir,
+                                "Volcano_", output_name, ".png"
+              ),
+              title = output_name
+            )
+            progress1$close()
           }
-
-          rv$deg$results[[output_name]]$symbol <-
-            deg_annotation(
-              keys = row.names(rv$deg$results[[output_name]]),
-              orgdb = orgdb,
-              column = "SYMBOL"
-            )
-          rv$deg$results[[output_name]]$entrez <-
-            deg_annotation(
-              keys = row.names(rv$deg$results[[output_name]]),
-              orgdb = orgdb,
-              column = "ENTREZID"
-            )
-
-          progress1$inc(
-            1 / 4,
-            detail = paste("... CSV export ...")
-          )
-          utils::write.csv(
-            x = rv$deg$results[[output_name]],
-            file = paste0(rv$csvdir, output_name, ".csv")
-          )
-
-          progress1$inc(
-            1 / 4,
-            detail = paste("... volcano plot ...")
-          )
-          plot_volcano(
-            results_object = rv$deg$results[[output_name]],
-            filename = paste0(rv$plotdir,
-                              "Volcano_", output_name, ".png"
-            ),
-            title = output_name
-          )
-          progress1$close()
         }
         progress$close()
         rv$finished_deg <- TRUE
@@ -238,7 +242,11 @@ module_deg_server <- function(input,
     req(rv$finished_deg)
 
     for (output_name in names(rv$deg$results)) {
-      print(output_name)
+
+      removeTab(
+        inputId = "deg_result_tabs",
+        target = output_name
+      )
 
       # append tabs
       appendTab(
@@ -291,7 +299,7 @@ module_deg_server <- function(input,
                 data.frame(rv$deg$results[[output_name]]),
                 options = list(scrollX = TRUE,
                                pageLength = 20,
-                               dom = "ltip"))
+                               dom = "fltip"))
             })
 
           # create dl button
