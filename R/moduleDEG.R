@@ -104,13 +104,9 @@ module_deg_server <- function(input,
 
       if (length(selected_rows) > 0) {
 
-        shinyjs::disable("deg_start")
-        shinyjs::disable("deg_fdr")
         shinyjs::disable("deg_orgdb")
 
         rv$deg$results <- list()
-
-        rv$deg_q <- input_re()[["moduleDEG-deg_fdr"]]
 
         # Create a Progress object
         progress <- shiny::Progress$new()
