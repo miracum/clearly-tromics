@@ -30,8 +30,12 @@ launch_app()
 # Example files
 
 Example files are available: 
-* Count data: [count_data.csv](inst/example_data/count_data.csv)
-* Meta data: [metadata.csv](inst/example_data/metadata.csv)
+* mRNA:
+  + Count data: [count_data.csv](inst/example_data/count_data.csv)
+  + Meta data: [metadata.csv](inst/example_data/metadata.csv)
+* miRNA:
+  + Count data: [miRNA_counts.csv](inst/example_data/miRNA_counts.csv)
+  + Meta data: [miRNA_metadata.csv](inst/example_data/miRNA_metadata.csv)
 
 # Exprected input file structure
 * The app works based on two input files (Compare example file):
@@ -50,6 +54,7 @@ Example files are available:
 
 # More Infos
 
+- about CLEARLY: [https://www.transcanfp7.eu/index.php/abstract/clearly.html](https://www.transcanfp7.eu/index.php/abstract/clearly.html)
 - about MIRACUM: [https://www.miracum.org/](https://www.miracum.org/)
 - about the Medical Informatics Initiative: [https://www.medizininformatik-initiative.de/index.php/de](https://www.medizininformatik-initiative.de/index.php/de)
 - about Shiny: https://www.rstudio.com/products/shiny/
