@@ -8,16 +8,16 @@ my_desc <- desc::description$new("!new")
 my_desc$set("Package", packagename)
 # Set author names
 my_desc$set_authors(c(
+  person("Maximilian", "Fuchs", email = "maximilian.fuchs@fau.de", role = c('cre', 'aut')),
   person("Lorenz A.", "Kapsner", role = c('aut'),
-         comment = c(ORCID = "0000-0003-1866-860X")),
-  person("Maximilian", "Fuchs", email = "maximilian.fuchs@fau.de", role = c('cre', 'aut'))
+         comment = c(ORCID = "0000-0003-1866-860X"))
 ))
 # Remove some author fields
 my_desc$del("Maintainer")
 # Vignette Builder
 my_desc$set("VignetteBuilder" = "knitr")
 # Set the version
-my_desc$set_version("0.0.1.9008")
+my_desc$set_version("0.0.1.9009")
 # The title of your package
 my_desc$set(Title = "GUI for transcriptome profiling analysis")
 # The description of your package
