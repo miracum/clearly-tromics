@@ -37,7 +37,7 @@ Example files are available:
   + Count data: [miRNA_counts.csv](inst/example_data/miRNA_counts.csv)
   + Meta data: [miRNA_metadata.csv](inst/example_data/miRNA_metadata.csv)
 
-# Exprected input file structure
+# Expected input file structure
 * The app works based on two input files (Compare example file):
   - Countdata: A comma-separated text file that contains raw read counts. Each 
   line represents a gene   and the row names have to be Ensembl-IDs. Each column represents one         sample. 
