@@ -188,18 +188,20 @@ module_deg_server <- function(input,
               )
             }
 
-            rv$deg$results[[output_name]]$symbol <-
-              deg_annotation(
-                keys = row.names(rv$deg$results[[output_name]]),
-                orgdb = orgdb,
-                column = "SYMBOL"
-              )
-            rv$deg$results[[output_name]]$entrez <-
-              deg_annotation(
-                keys = row.names(rv$deg$results[[output_name]]),
-                orgdb = orgdb,
-                column = "ENTREZID"
-              )
+            if (input_re()[["moduleDEG-deg_cb_annotations"]]) {
+              rv$deg$results[[output_name]]$symbol <-
+                deg_annotation(
+                  keys = row.names(rv$deg$results[[output_name]]),
+                  orgdb = orgdb,
+                  column = "SYMBOL"
+                )
+              rv$deg$results[[output_name]]$entrez <-
+                deg_annotation(
+                  keys = row.names(rv$deg$results[[output_name]]),
+                  orgdb = orgdb,
+                  column = "ENTREZID"
+                )
+            }
 
             progress1$inc(
               1 / 4,
@@ -415,15 +417,27 @@ module_deg_ui <- function(id) {
           #   step = 0.001
           # ),
           # nolint end
-          textInput(
-            inputId = ns("deg_orgdb"),
-            label = "OrgDB",
-            value = "org.Rn.eg.db"
+          checkboxInput(
+            inputId = ns("deg_cb_annotations"),
+            label = "Add gene annotations",
+            value = FALSE
           ),
-          tags$hr(),
-          actionButton(
-            inputId = ns("deg_start"),
-            label = "Start DEG analysis"
+          conditionalPanel(
+            condition = "input['moduleDEG-deg_cb_annotations'] == 1",
+            helpText(paste0(
+              "Please insert the OrgDB that matches the ",
+              "species of your experiment."
+            )),
+            textInput(
+              inputId = ns("deg_orgdb"),
+              label = "OrgDB",
+              value = "org.Rn.eg.db"
+            ),
+            tags$hr(),
+            actionButton(
+              inputId = ns("deg_start"),
+              label = "Start DEG analysis"
+            )
           ),
           width = 12
         )

@@ -17,7 +17,7 @@ my_desc$del("Maintainer")
 # Vignette Builder
 my_desc$set("VignetteBuilder" = "knitr")
 # Set the version
-my_desc$set_version("0.0.1.9007")
+my_desc$set_version("0.0.1.9008")
 # The title of your package
 my_desc$set(Title = "GUI for transcriptome profiling analysis")
 # The description of your package
@@ -135,8 +135,10 @@ counttable <- "inst/example_data/count_data.csv"
 metadata <- "inst/example_data/metadata.csv"
 design <- "~ 0 + treatment"
 
-countdata <- utils::read.csv(counttable, header = T, row.names = 1)
-metadata <- utils::read.csv(metadata, header = T, row.names = 1)
+countdata <- utils::read.csv(counttable, header = T, row.names = 1,
+                             stringsAsFactors = TRUE)
+metadata <- utils::read.csv(metadata, header = T, row.names = 1,
+                            stringsAsFactors = TRUE)
 design <- "~ 0 + treatment"
 
 example_data <- tRomics::data_input(
@@ -148,3 +150,22 @@ example_data <- tRomics::data_input(
 usethis::use_data(countdata, internal = F, overwrite = T)
 usethis::use_data(metadata, internal = F, overwrite = T)
 
+
+counttable <- "inst/example_data/miRNA_counts.csv"
+metadata <- "inst/example_data/miRNA_metadata.csv"
+design <- "~ 0 + treatment"
+
+mirna_countdata <- utils::read.csv(counttable, header = T, row.names = 1,
+                                   stringsAsFactors = TRUE)
+mirna_metadata <- utils::read.csv(metadata, header = T, row.names = 1,
+                                  stringsAsFactors = TRUE)
+design <- "~ 0 + treatment"
+
+mirna_example_data <- tRomics::data_input(
+  counttable = mirna_countdata,
+  metadata = mirna_metadata,
+  design = design
+)
+
+usethis::use_data(mirna_countdata, internal = F, overwrite = T)
+usethis::use_data(mirna_metadata, internal = F, overwrite = T)

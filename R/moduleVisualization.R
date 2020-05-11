@@ -59,7 +59,7 @@ module_visualization_server <- function(input,
     plot_heatmap(
       data = rv$data_logtrans,
       filename = paste0(rv$plotdir, "Heatmap.png"),
-      ngenes = 1000
+      ngenes = input_re()[["moduleDataimport-dataimport_heatmap_ngenes"]]
     )
 
     rv$finished_plotting <- TRUE

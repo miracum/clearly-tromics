@@ -56,3 +56,21 @@ NULL
 #' @docType data
 #' @keywords data
 NULL
+
+#' @title mirna_countdata
+#'
+#' @description A dataset containing the miRNA example count data
+#'
+#' @name mirna_countdata
+#' @docType data
+#' @keywords data
+NULL
+
+#' @title mirna_metadata
+#'
+#' @description A dataset containing the miRNA example meta data
+#'
+#' @name mirna_metadata
+#' @docType data
+#' @keywords data
+NULL

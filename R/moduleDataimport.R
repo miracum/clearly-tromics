@@ -31,7 +31,8 @@ module_dataimport_server <- function(input,
         input_re()[["moduleDataimport-import_metadata"]]$datapath,
         utils::read.csv,
         header = T,
-        row.names = 1
+        row.names = 1,
+        stringsAsFactors = TRUE
       )
       rv$data_metadata <- file()
       shinyjs::disable("dataimport_example_data")
@@ -53,7 +54,8 @@ module_dataimport_server <- function(input,
         input_re()[["moduleDataimport-import_countdata"]]$datapath,
         utils::read.csv,
         header = T,
-        row.names = 1
+        row.names = 1,
+        stringsAsFactors = TRUE
       )
       rv$data_countdata <- file()
       shinyjs::disable("dataimport_example_data")
@@ -118,7 +120,6 @@ module_dataimport_server <- function(input,
                              })
 
           rv$data_countdata <- rv$data_countdata[, unname(sort_vec)]
-
 
           shinyjs::disable("import_metadata")
           shinyjs::disable("import_countdata")
@@ -205,10 +206,15 @@ module_dataimport_server <- function(input,
         detail = paste("... loading ...")
       )
 
-      # load example data
-      rv$data_countdata <- tRomics::countdata
-      rv$data_metadata <- tRomics::metadata
-
+      if (input$dataimport_select_examples == "mRNA") {
+        # load mRNA example data
+        rv$data_countdata <- tRomics::countdata
+        rv$data_metadata <- tRomics::metadata
+      } else if (input$dataimport_select_examples == "miRNA") {
+        # load miRNA example data
+        rv$data_countdata <- tRomics::mirna_countdata
+        rv$data_metadata <- tRomics::mirna_metadata
+      }
       progress$close()
     })
 
@@ -281,6 +287,7 @@ module_dataimport_server <- function(input,
 
         shinyjs::disable("dataimport_start_analysis")
         shinyjs::disable("dataimport_grouping_variable")
+        shinyjs::disable("dataimport_heatmap_ngenes")
 
         # Create a Progress object
         progress <- shiny::Progress$new()
@@ -375,6 +382,13 @@ module_dataimport_ui <- function(id) {
             )
           ),
           tags$hr(),
+          radioButtons(
+            inputId = ns("dataimport_select_examples"),
+            label = "Select type of example data",
+            choices = c("mRNA", "miRNA"),
+            selected = "mRNA",
+            inline = TRUE
+          ),
           actionButton(
             inputId = ns("dataimport_example_data"),
             label = "Load example data"
@@ -433,6 +447,16 @@ module_dataimport_ui <- function(id) {
                 tags$hr(),
                 # https://shiny.rstudio.com/reference/shiny/0.11/helpText.html
                 helpText("Helptext would go here"),
+                tags$hr(),
+                numericInput(
+                  inputId = ns("dataimport_heatmap_ngenes"),
+                  label = "Number of genes included in heatmap",
+                  value = 1000,
+                  min = 10,
+                  max = Inf,
+                  step = 1
+                ),
+                tags$hr(),
                 actionButton(
                   inputId = ns("dataimport_start_analysis"),
                   label = "Start analysis"
