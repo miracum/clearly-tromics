@@ -9,6 +9,7 @@ Authors@R:
       person(given = "Lorenz A.",
              family = "Kapsner",
              role = "aut",
+             email = "lorenz.kapsner@uk-erlangen.de",
              comment = c(ORCID = "0000-0003-1866-860X")),
       person(given = "Meik",
              family = "Kunz",

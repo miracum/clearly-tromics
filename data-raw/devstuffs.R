@@ -10,6 +10,7 @@ my_desc$set("Package", packagename)
 my_desc$set_authors(c(
   person("Maximilian", "Fuchs", email = "maximilian.fuchs@fau.de", role = c('cre', 'aut')),
   person("Lorenz A.", "Kapsner", role = c('aut'),
+         email = "lorenz.kapsner@uk-erlangen.de",
          comment = c(ORCID = "0000-0003-1866-860X")),
   person("Meik", "Kunz", role = "ctb")
 ))
