@@ -29,8 +29,8 @@ launch_app()
 
 # Example files
 
-The example files were created by Fabian Kreutzer and Jan Fiedler from EMTTS, MH Hannover. These example data are integrated into this shiny application and can there directly being loaded by clicking the button 'Load example data'.
-Those data are also avialable via this R package:  
+The example files were created by Fabian Kreutzer and Jan Fiedler from IMTTS, MH Hannover. These example data are integrated into this shiny application and can there directly be loaded by clicking the button 'Load example data'.
+The data are also avialable via this R package:  
 
 * mRNA:
   + Count data: [count_data.csv](inst/example_data/count_data.csv)
