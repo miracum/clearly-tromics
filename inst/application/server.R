@@ -40,11 +40,13 @@ shiny::shinyServer(function(input, output, session) {
             shinydashboard::sidebarMenu(
                 shinydashboard::menuItem(
                     "Visualizations",
-                    tabName = "tab_viz"
+                    tabName = "tab_viz",
+                    icon = icon("chart-line")
                 ),
                 shinydashboard::menuItem(
                     "DEG analysis",
-                    tabName = "tab_deg"
+                    tabName = "tab_deg",
+                    icon = icon("square-root-alt")
                 )
             )
         })
