@@ -432,12 +432,12 @@ module_deg_ui <- function(id) {
               inputId = ns("deg_orgdb"),
               label = "OrgDB",
               value = "org.Rn.eg.db"
-            ),
-            tags$hr(),
-            actionButton(
-              inputId = ns("deg_start"),
-              label = "Start DEG analysis"
             )
+          ),
+          tags$hr(),
+          actionButton(
+            inputId = ns("deg_start"),
+            label = "Start DEG analysis"
           ),
           width = 12
         )

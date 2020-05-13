@@ -19,7 +19,7 @@ my_desc$del("Maintainer")
 # Vignette Builder
 my_desc$set("VignetteBuilder" = "knitr")
 # Set the version
-my_desc$set_version("0.0.1.9010")
+my_desc$set_version("0.0.1.9011")
 # The title of your package
 my_desc$set(Title = "GUI for transcriptome profiling analysis")
 # The description of your package
