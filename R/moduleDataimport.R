@@ -446,7 +446,6 @@ module_dataimport_ui <- function(id) {
                 condition = "output['moduleDataimport-preprocess_present']",
                 tags$hr(),
                 # https://shiny.rstudio.com/reference/shiny/0.11/helpText.html
-                helpText("Helptext would go here"),
                 tags$hr(),
                 numericInput(
                   inputId = ns("dataimport_heatmap_ngenes"),
