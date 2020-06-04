@@ -2,6 +2,8 @@
 
 <!-- badges: start -->
 [![R CMD Check via {tic}](https://github.com/miracum/clearly-tromics/workflows/R%20CMD%20Check%20via%20{tic}/badge.svg?branch=master)](https://github.com/miracum/clearly-tromics/actions)
+[![linting](https://github.com/miracum/clearly-tromics/workflows/lint/badge.svg?branch=master)](https://github.com/miracum/clearly-tromics/actions)
+[![test-coverage](https://github.com/miracum/clearly-tromics/workflows/test-coverage/badge.svg?branch=master)](https://github.com/miracum/clearly-tromics/actions)
 [![pipeline status](https://gitlab.miracum.org/clearly/tromics/badges/master/pipeline.svg)](https://gitlab.miracum.org/clearly/tromics/commits/master)
 [![coverage report](https://gitlab.miracum.org/clearly/tromics/badges/master/coverage.svg)](https://gitlab.miracum.org/clearly/tromics/commits/master)
 <!-- badges: end -->
