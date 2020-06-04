@@ -33,3 +33,6 @@
 !/inst/example_data/metadata.csv
 !/data/countdata.rda
 !/data/metadata.rda
+docs/
+!/tic.R
+!/.github/

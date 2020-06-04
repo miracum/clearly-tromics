@@ -6,3 +6,6 @@
 ^\.vscode$
 ^/plots$
 ^\.lintr$
+^\.ccache$
+^\.github$
+^tic\.R$
