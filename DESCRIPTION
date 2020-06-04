@@ -1,6 +1,6 @@
 Package: tRomics
 Title: GUI for transcriptome profiling analysis
-Version: 0.0.2
+Version: 0.0.2.9001
 Authors@R: 
     c(person(given = "Maximilian",
              family = "Fuchs",
@@ -17,11 +17,11 @@ Authors@R:
 Description: GUI for integrative in silico analysis for deciphering global transcriptome profiling data.
 License: GPL-3
 LazyData: true
-URL: https://gitlab.miracum.org/clearly/tromics
-BugReports: https://gitlab.miracum.org/clearly/tromics/issues
+URL: https://github.com/miracum/clearly-tromics
+BugReports: https://github.com/miracum/clearly-tromics/issues
 Encoding: UTF-8
 VignetteBuilder: knitr
-Date: 2020-05-15
+Date: 2020-06-04
 biocViews: 
 Depends: 
     R (>= 2.10)

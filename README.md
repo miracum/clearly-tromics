@@ -14,7 +14,7 @@ You can install *tRomics* with the following commands in R:
 ``` r
 options('repos' = 'https://ftp.fau.de/cran/')
 install.packages("devtools")
-devtools::install_git("https://gitlab.miracum.org/clearly/tromics.git")
+devtools::install_github("miracum/clearly-tromics")
 ```
 # Start shiny application
 
