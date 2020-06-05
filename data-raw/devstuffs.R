@@ -16,10 +16,8 @@ my_desc$set_authors(c(
 ))
 # Remove some author fields
 my_desc$del("Maintainer")
-# Vignette Builder
-my_desc$set("VignetteBuilder" = "knitr")
 # Set the version
-my_desc$set_version("0.0.2.9001")
+my_desc$set_version("0.0.2.9002")
 # The title of your package
 my_desc$set(Title = "GUI for transcriptome profiling analysis")
 # The description of your package
@@ -79,7 +77,6 @@ usethis::use_package("SummarizedExperiment", type="Imports")
 usethis::use_package("BiocManager", type="Imports")
 
 # Suggests
-usethis::use_package("knitr", type="Suggests")
 usethis::use_package("testthat", type="Suggests")
 usethis::use_package("processx", type="Suggests")
 usethis::use_package("lintr", type="Suggests")

@@ -1,6 +1,6 @@
 Package: tRomics
 Title: GUI for transcriptome profiling analysis
-Version: 0.0.2.9001
+Version: 0.0.2.9002
 Authors@R: 
     c(person(given = "Maximilian",
              family = "Fuchs",
@@ -20,8 +20,7 @@ LazyData: true
 URL: https://github.com/miracum/clearly-tromics
 BugReports: https://github.com/miracum/clearly-tromics/issues
 Encoding: UTF-8
-VignetteBuilder: knitr
-Date: 2020-06-04
+Date: 2020-06-05
 biocViews: 
 Depends: 
     R (>= 2.10)
@@ -43,8 +42,6 @@ Imports:
     SummarizedExperiment,
     BiocManager
 Suggests: 
-    knitr,
     testthat,
     processx,
     lintr
-RoxygenNote: 7.1.0
