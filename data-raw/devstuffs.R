@@ -27,8 +27,8 @@ my_desc$set(Description = "GUI for integrative in silico analysis for decipherin
 # The description of your package
 my_desc$set("Date" = as.character(Sys.Date()))
 # The urls
-my_desc$set("URL", "https://gitlab.miracum.org/clearly/tromics")
-my_desc$set("BugReports", "https://gitlab.miracum.org/clearly/tromics/issues")
+my_desc$set("URL", "https://github.com/miracum/clearly-tromics")
+my_desc$set("BugReports", "https://github.com/miracum/clearly-tromics/issues")
 # License
 my_desc$set("License", "GPL-3")
 

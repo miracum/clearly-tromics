@@ -17,17 +17,17 @@ Authors@R:
 Description: GUI for integrative in silico analysis for deciphering global transcriptome profiling data.
 License: GPL-3
 LazyData: true
-URL: https://gitlab.miracum.org/clearly/tromics
-BugReports: https://gitlab.miracum.org/clearly/tromics/issues
+URL: https://github.com/miracum/clearly-tromics
+BugReports: https://github.com/miracum/clearly-tromics/issues
 Encoding: UTF-8
 VignetteBuilder: knitr
-Date: 2020-05-15
+Date: 2021-05-12
 biocViews: 
 Depends: 
     R (>= 2.10)
 Imports: 
-    shiny,
     shinydashboard,
+    shiny,
     shinyjs,
     utils,
     DT,
@@ -43,8 +43,7 @@ Imports:
     SummarizedExperiment,
     BiocManager
 Suggests: 
-    knitr,
     testthat,
+    knitr,
     processx,
     lintr
-RoxygenNote: 7.1.0
