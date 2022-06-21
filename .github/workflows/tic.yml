@@ -24,6 +24,7 @@ jobs:
           - { os: windows-latest, r: "release", pkgdown: "true", latex: "true", java: "false" }
           - { os: macOS-latest, r: "release", pkgdown: "true", latex: "true", java: "false" }
           - { os: ubuntu-latest, r: "release", pkgdown: "true", latex: "true", java: "false" }
+          - { os: ubuntu-latest, r: "devel", pkgdown: "true", latex: "true", java: "false" }
 
     env:
       # otherwise remotes::fun() errors cause the build to fail. Example: Unavailability of binaries
@@ -46,7 +47,7 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@main
 
       - uses: r-lib/actions/setup-r@master
         with:
@@ -63,10 +64,10 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@master
         if: matrix.config.latex == 'true'
 
-      - uses: actions/setup-java@master
+      - uses: actions/setup-java@v1
         if: matrix.config.java == 'true'
         with:
-          java-version: '8'
+          java-version: 8
 
       # set date/week for use in cache creation
       # https://github.community/t5/GitHub-Actions/How-to-set-and-access-a-Workflow-variable/m-p/42970
@@ -78,7 +79,7 @@ jobs:
 
       - name: "[Cache] Cache R packages"
         if: runner.os != 'Windows'
-        uses: pat-s/always-upload-cache@master
+        uses: pat-s/always-upload-cache@main
         with:
           path: ${{ env.R_LIBS_USER }}
           key: ${{ runner.os }}-r-${{ matrix.config.r }}-${{steps.date.outputs.date}}
@@ -89,24 +90,13 @@ jobs:
         run: |
           Rscript -e "if (!requireNamespace('remotes')) install.packages('remotes', type = 'source')"
           Rscript -e "if (getRversion() < '3.2' && !requireNamespace('curl')) install.packages('curl', type = 'source')"
-
       - name: "[Stage] [Linux] Install curl"
         if: runner.os == 'Linux'
         run: sudo apt install libcurl4-openssl-dev
 
       - name: "[Stage] Configure R Java"
         if: runner.os != 'Windows' && matrix.config.java == 'true'
-        run: sudo R CMD javareconf
-
-
-      - name: "[Stage] [Linux] Install Magick++"
-        if: runner.os == 'Linux'
-        run: sudo apt install libmagick++-dev
-
-      - name: "[Stage] [macOS] Install Magick++"
-        if: runner.os == 'macOS'
-        run: brew install imagemagick@6
-
+        run: "echo export PATH=$PATH > reconf.sh; echo export JAVA_HOME=$JAVA_HOME >> reconf.sh; echo R CMD javareconf >> reconf.sh; sudo bash reconf.sh"
 
       - name: "[Stage] Install"
         if: matrix.config.os != 'macOS-latest' || matrix.config.r != 'devel'
@@ -121,7 +111,7 @@ jobs:
 
       - name: "[Stage] Upload R CMD check artifacts"
         if: failure()
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@main
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
